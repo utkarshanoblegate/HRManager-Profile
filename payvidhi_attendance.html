@@ -1,0 +1,612 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-left:auto;background:#e53935;color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.notif-badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-av{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.content{flex:1;padding:32px 40px;overflow-y:auto}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px}
+.page-title{font-size:30px;font-weight:700}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px}
+.btn{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+
+/* stats */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:10px;padding:18px 20px;border:1px solid #e8e8e8}
+.stat-lbl{font-size:12px;color:#888;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.stat-num{font-size:26px;font-weight:700;line-height:1}
+.stat-foot{font-size:12px;margin-top:5px}
+.trend-up{color:#2e7d32;font-weight:600}
+.trend-dn{color:#c62828;font-weight:600}
+.trend-nt{color:#888}
+
+/* two-col */
+.two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:24px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:24px}
+.box{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.box-title{font-size:15px;font-weight:700}
+.box-action{font-size:12px;color:#1976d2;cursor:pointer;font-weight:600}
+
+/* calendar */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-month{font-size:15px;font-weight:700}
+.cal-nav-btn{width:28px;height:28px;border-radius:6px;background:#f5f5f5;border:none;cursor:pointer;font-size:14px;color:#555;display:flex;align-items:center;justify-content:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal-day-lbl{font-size:10px;color:#aaa;font-weight:700;padding:4px 0}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:12px;cursor:pointer;color:#555;transition:background .12s}
+.cal-day:hover:not(.other){background:#f0f0f0}
+.cal-day.today{background:#1976d2;color:#fff;font-weight:700}
+.cal-day.full{background:#e8f5e9;color:#2e7d32;font-weight:600}
+.cal-day.partial{background:#fff8e1;color:#b36a00;font-weight:600}
+.cal-day.absent{background:#ffebee;color:#c62828;font-weight:600}
+.cal-day.weekend{background:#f5f5f5;color:#bbb}
+.cal-day.holiday{background:#e8eaf6;color:#3949ab;font-weight:600}
+.cal-day.other{color:#ddd}
+.cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* chart bars */
+.chart-wrap{height:130px;display:flex;align-items:flex-end;gap:4px;padding-top:4px}
+.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bc-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .3s}
+.bc-lbl{font-size:9px;color:#aaa;white-space:nowrap}
+.bc-val{font-size:9px;font-weight:700;color:#555}
+
+/* late/early rows */
+.alert-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5}
+.alert-row:last-child{border-bottom:none}
+.al-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.al-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.al-info{font-size:11px;color:#888;margin-top:1px}
+.al-tag{margin-left:auto;white-space:nowrap;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+
+/* tabs, filters, table */
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:18px}
+.tab{padding:11px 18px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .13s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:42px}
+.search-box input{border:none;outline:none;font-size:13px;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.fsel{height:42px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none;cursor:pointer}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:#f8f9fa}
+th{padding:13px 14px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:12px 14px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.emp-cell{display:flex;align-items:center;gap:10px}
+.emp-av-sm{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-present{background:#e8f5e9;color:#2e7d32}
+.chip-absent{background:#ffebee;color:#c62828}
+.chip-late{background:#fff8e1;color:#b36a00}
+.chip-half{background:#e3f2fd;color:#1565c0}
+.chip-ot{background:#f3e5f5;color:#6a1b9a}
+.chip-wfh{background:#e0f7fa;color:#00838f}
+.chip-holiday{background:#e8eaf6;color:#3949ab}
+.dur-bar{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:5px}
+.dur-fill{height:100%;border-radius:3px}
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:none;transition:all .15s}
+.act-v{background:#e3f2fd;color:#1565c0}
+.act-v:hover{background:#bbdefb}
+.act-e{background:#f5f5f5;color:#555}
+.act-e:hover{background:#e0e0e0}
+.act-row{display:flex;gap:5px}
+.pg-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.pg-btns{display:flex;gap:4px}
+.pgb{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555;background:#fff}
+.pgb.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700}
+
+/* live clock strip */
+.live-strip{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:14px 22px;margin-bottom:24px;display:flex;align-items:center;gap:24px}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#4caf50;box-shadow:0 0 0 3px rgba(76,175,80,.2);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(76,175,80,.2)}50%{box-shadow:0 0 0 7px rgba(76,175,80,.05)}}
+.live-time{font-size:22px;font-weight:700;color:#1a1a1a;font-family:monospace}
+.live-label{font-size:12px;color:#888;margin-top:1px}
+.live-divider{width:1px;height:36px;background:#e5e5e5}
+.live-stat-num{font-size:20px;font-weight:700}
+.live-stat-lbl{font-size:11px;color:#888;margin-top:1px}
+
+/* prog bar inline */
+.inline-prog{display:flex;align-items:center;gap:8px}
+.prog-bar{flex:1;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px}
+.prog-pct{font-size:12px;font-weight:700;width:32px;text-align:right;color:#555}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Attendance</div>
+      <div class="topbar-right">
+        <button class="badge-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="notif-badge">7</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div><div style="font-size:13px;font-weight:600">HR Manager</div><div style="font-size:11px;color:#888">Admin</div></div>
+          <div class="user-av">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Attendance</div>
+          <div class="page-sub">Daily check-in/out logs, overtime &amp; monthly summary — May 2026</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            Export
+          </button>
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Lock Month
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Manual Entry
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Today Strip -->
+      <div class="live-strip">
+        <div class="live-dot"></div>
+        <div>
+          <div class="live-time">09:42 AM</div>
+          <div class="live-label">Monday, 18 May 2026 · Live</div>
+        </div>
+        <div class="live-divider"></div>
+        <div><div class="live-stat-num" style="color:#2e7d32">11</div><div class="live-stat-lbl">Checked In</div></div>
+        <div class="live-divider"></div>
+        <div><div class="live-stat-num" style="color:#c62828">3</div><div class="live-stat-lbl">Absent / Leave</div></div>
+        <div class="live-divider"></div>
+        <div><div class="live-stat-num" style="color:#b36a00">2</div><div class="live-stat-lbl">Late Arrivals</div></div>
+        <div class="live-divider"></div>
+        <div><div class="live-stat-num" style="color:#1976d2">0</div><div class="live-stat-lbl">Not Yet In</div></div>
+        <div class="live-divider"></div>
+        <div><div class="live-stat-num" style="color:#6a1b9a">3</div><div class="live-stat-lbl">WFH Today</div></div>
+        <div style="margin-left:auto">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;color:#555;font-weight:600">Today's Rate</span>
+            <div style="width:100px">
+              <div class="inline-prog">
+                <div class="prog-bar"><div class="prog-fill" style="width:78%;background:#2e7d32"></div></div>
+                <span class="prog-pct" style="color:#2e7d32">78%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">Avg. Attendance<div class="stat-icon" style="background:#e8f5e9;color:#2e7d32">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div></div>
+          <div class="stat-num" style="color:#2e7d32">91.3%</div>
+          <div class="stat-foot trend-up">+2.1% vs April</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Total Work Days<div class="stat-icon" style="background:#e3f2fd;color:#1565c0">📅</div></div>
+          <div class="stat-num">23</div>
+          <div class="stat-foot trend-nt">May 2026 working days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Total Absent Days<div class="stat-icon" style="background:#ffebee;color:#c62828">✗</div></div>
+          <div class="stat-num" style="color:#c62828">28</div>
+          <div class="stat-foot trend-dn">Across all employees</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Overtime Hours<div class="stat-icon" style="background:#f3e5f5;color:#6a1b9a">⏱</div></div>
+          <div class="stat-num" style="color:#6a1b9a">84h</div>
+          <div class="stat-foot trend-up">+12h vs April</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Late Arrivals<div class="stat-icon" style="background:#fff8e1;color:#b36a00">⚠️</div></div>
+          <div class="stat-num" style="color:#e65100">9</div>
+          <div class="stat-foot trend-dn">This month</div>
+        </div>
+      </div>
+
+      <!-- Calendar + Alerts + Chart -->
+      <div class="three-col">
+
+        <!-- Attendance Calendar -->
+        <div class="box">
+          <div class="cal-nav-row">
+            <button class="cal-nav-btn">‹</button>
+            <div class="cal-month">May 2026</div>
+            <button class="cal-nav-btn">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-lbl">Su</div><div class="cal-day-lbl">Mo</div><div class="cal-day-lbl">Tu</div><div class="cal-day-lbl">We</div><div class="cal-day-lbl">Th</div><div class="cal-day-lbl">Fr</div><div class="cal-day-lbl">Sa</div>
+            <!-- week 1 -->
+            <div class="cal-day other">27</div><div class="cal-day other">28</div><div class="cal-day other">29</div><div class="cal-day other">30</div><div class="cal-day full">1</div><div class="cal-day full">2</div><div class="cal-day weekend">3</div>
+            <!-- week 2 -->
+            <div class="cal-day weekend">4</div><div class="cal-day full">5</div><div class="cal-day full">6</div><div class="cal-day partial">7</div><div class="cal-day full">8</div><div class="cal-day full">9</div><div class="cal-day weekend">10</div>
+            <!-- week 3 -->
+            <div class="cal-day weekend">11</div><div class="cal-day full">12</div><div class="cal-day full">13</div><div class="cal-day full">14</div><div class="cal-day partial">15</div><div class="cal-day full">16</div><div class="cal-day weekend">17</div>
+            <!-- week 4 -->
+            <div class="cal-day weekend">18</div><div class="cal-day today" title="Today">18</div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day weekend">24</div>
+            <!-- week 5 -->
+            <div class="cal-day weekend">25</div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day holiday">29</div><div class="cal-day"></div><div class="cal-day weekend">31</div>
+          </div>
+          <div class="cal-legend">
+            <span class="leg-item"><span class="leg-dot" style="background:#e8f5e9;border:1px solid #a5d6a7"></span>Full</span>
+            <span class="leg-item"><span class="leg-dot" style="background:#fff8e1;border:1px solid #ffe082"></span>Partial</span>
+            <span class="leg-item"><span class="leg-dot" style="background:#ffebee;border:1px solid #ffcdd2"></span>Absent</span>
+            <span class="leg-item"><span class="leg-dot" style="background:#e8eaf6;border:1px solid #c5cae9"></span>Holiday</span>
+            <span class="leg-item"><span class="leg-dot" style="background:#1976d2"></span>Today</span>
+          </div>
+          <!-- Per-employee mini summary -->
+          <div style="margin-top:14px;border-top:1px solid #f0f0f0;padding-top:12px">
+            <div style="font-size:12px;font-weight:700;color:#888;margin-bottom:8px">Department Attendance Rate — May</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:600">Engineering</span><span style="color:#2e7d32;font-weight:700">94%</span></div><div class="prog-bar" style="height:5px"><div class="prog-fill" style="width:94%;background:#1976d2"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:600">Sales</span><span style="color:#b36a00;font-weight:700">87%</span></div><div class="prog-bar" style="height:5px"><div class="prog-fill" style="width:87%;background:#f9a825"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:600">Marketing</span><span style="color:#2e7d32;font-weight:700">96%</span></div><div class="prog-bar" style="height:5px"><div class="prog-fill" style="width:96%;background:#66bb6a"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:600">Operations</span><span style="color:#2e7d32;font-weight:700">91%</span></div><div class="prog-bar" style="height:5px"><div class="prog-fill" style="width:91%;background:#26c6da"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts: Late + Absent -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Today's Alerts</div>
+            <span class="box-action">Mark Attendance</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#b36a00;margin-bottom:6px">⚠️ Late Arrivals</div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#f3e5f5;color:#6a1b9a">JD</div>
+            <div style="flex:1">
+              <div class="al-name">John Doe</div>
+              <div class="al-info">Checked in 09:38 AM · Expected 09:00 AM</div>
+            </div>
+            <span class="al-tag" style="background:#fff8e1;color:#b36a00">+38 min</span>
+          </div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#fce4ec;color:#880e4f">LA</div>
+            <div style="flex:1">
+              <div class="al-name">Lisa Anderson</div>
+              <div class="al-info">Checked in 09:51 AM · Expected 09:00 AM</div>
+            </div>
+            <span class="al-tag" style="background:#fff8e1;color:#b36a00">+51 min</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#c62828;margin:14px 0 6px">🔴 Absent Today</div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#e3f2fd;color:#1565c0">SJ</div>
+            <div style="flex:1">
+              <div class="al-name">Sarah Johnson</div>
+              <div class="al-info">Annual Leave · May 14–16 · Approved</div>
+            </div>
+            <span class="al-tag" style="background:#e3f2fd;color:#1565c0">Leave</span>
+          </div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#f3e5f5;color:#6a1b9a">AG</div>
+            <div style="flex:1">
+              <div class="al-name">Amanda Garcia</div>
+              <div class="al-info">Sick Leave · Today · Approved</div>
+            </div>
+            <span class="al-tag" style="background:#ffebee;color:#c62828">Sick</span>
+          </div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#ffebee;color:#c62828">DW</div>
+            <div style="flex:1">
+              <div class="al-name">Daniel Wilson</div>
+              <div class="al-info">No check-in recorded · No leave applied</div>
+            </div>
+            <span class="al-tag" style="background:#ffebee;color:#c62828">Unexcused</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#00838f;margin:14px 0 6px">🏠 Work From Home</div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#e8f5e9;color:#2e7d32">DM</div>
+            <div style="flex:1"><div class="al-name">David Martinez</div><div class="al-info">WFH approved · Checked in 09:05 AM</div></div>
+            <span class="al-tag" style="background:#e0f7fa;color:#00838f">WFH</span>
+          </div>
+          <div class="alert-row">
+            <div class="al-av" style="background:#e0f7fa;color:#00838f">EC</div>
+            <div style="flex:1"><div class="al-name">Emily Chen</div><div class="al-info">WFH approved · Checked in 09:12 AM</div></div>
+            <span class="al-tag" style="background:#e0f7fa;color:#00838f">WFH</span>
+          </div>
+        </div>
+
+        <!-- Weekly Trend Chart -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Weekly Attendance Trend</div>
+            <select style="font-size:12px;border:1px solid #e0e0e0;border-radius:6px;padding:4px 8px;color:#555;outline:none;cursor:pointer"><option>May 2026</option><option>Apr 2026</option></select>
+          </div>
+          <div class="chart-wrap">
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#90caf9"></div><span class="bc-lbl">W1 Mon</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#90caf9"></div><span class="bc-lbl">Tue</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#90caf9"></div><span class="bc-lbl">Wed</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#90caf9"></div><span class="bc-lbl">Thu</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#90caf9"></div><span class="bc-lbl">Fri</span></div>
+            <div class="bc" style="opacity:.3"><span class="bc-val"></span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl">—</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#64b5f6"></div><span class="bc-lbl">W2 Mon</span></div>
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#64b5f6"></div><span class="bc-lbl">Tue</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#64b5f6"></div><span class="bc-lbl">Wed</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#64b5f6"></div><span class="bc-lbl">Thu</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#64b5f6"></div><span class="bc-lbl">Fri</span></div>
+            <div class="bc" style="opacity:.3"><span class="bc-val"></span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl">—</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#42a5f5"></div><span class="bc-lbl">W3 Mon</span></div>
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#42a5f5"></div><span class="bc-lbl">Tue</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#42a5f5"></div><span class="bc-lbl">Wed</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#42a5f5"></div><span class="bc-lbl">Thu</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#42a5f5"></div><span class="bc-lbl">Fri</span></div>
+            <div class="bc" style="opacity:.3"><span class="bc-val"></span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl">—</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#1976d2;border:2px solid #1565c0"></div><span class="bc-lbl" style="color:#1976d2;font-weight:700">Today</span></div>
+          </div>
+          <div style="margin-top:14px;border-top:1px solid #f0f0f0;padding-top:12px">
+            <div style="font-size:12px;font-weight:700;color:#888;margin-bottom:8px">Overtime Summary — May</div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#e3f2fd;color:#1565c0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">SJ</div>
+                <span style="flex:1;color:#555">Sarah Johnson</span>
+                <div class="prog-bar" style="width:60px"><div class="prog-fill" style="width:80%;background:#1976d2"></div></div>
+                <span style="font-weight:700;color:#6a1b9a;width:32px;text-align:right">16h</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#e8f5e9;color:#2e7d32;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">DM</div>
+                <span style="flex:1;color:#555">David Martinez</span>
+                <div class="prog-bar" style="width:60px"><div class="prog-fill" style="width:60%;background:#1976d2"></div></div>
+                <span style="font-weight:700;color:#6a1b9a;width:32px;text-align:right">12h</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#fff8e1;color:#b36a00;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">MB</div>
+                <span style="flex:1;color:#555">Michael Brown</span>
+                <div class="prog-bar" style="width:60px"><div class="prog-fill" style="width:50%;background:#1976d2"></div></div>
+                <span style="font-weight:700;color:#6a1b9a;width:32px;text-align:right">10h</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                <div style="width:28px;height:28px;border-radius:50%;background:#e0f7fa;color:#00838f;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">JW</div>
+                <span style="flex:1;color:#555">Jessica Williams</span>
+                <div class="prog-bar" style="width:60px"><div class="prog-fill" style="width:45%;background:#1976d2"></div></div>
+                <span style="font-weight:700;color:#6a1b9a;width:32px;text-align:right">9h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="section-row">
+        <div class="section-title">Daily Attendance Log — 18 May 2026</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Bulk Regularize</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Download Log</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">Today (14)</div>
+        <div class="tab">Monthly Log</div>
+        <div class="tab">Late Arrivals (9)</div>
+        <div class="tab">Overtime (6)</div>
+        <div class="tab">Regularization Requests (3)</div>
+        <div class="tab">Shift Roster</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search employee name or ID..." />
+        </div>
+        <select class="fsel"><option>All Departments</option><option>Engineering</option><option>Sales</option><option>Marketing</option><option>Operations</option></select>
+        <select class="fsel"><option>All Status</option><option>Present</option><option>Absent</option><option>Late</option><option>WFH</option><option>Half Day</option></select>
+        <select class="fsel"><option>18 May 2026</option><option>17 May 2026</option><option>16 May 2026</option><option>This Week</option><option>This Month</option></select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:38px"><input type="checkbox" style="cursor:pointer"/></th>
+              <th style="width:190px">Employee</th>
+              <th style="width:100px">Department</th>
+              <th style="width:100px">Check In</th>
+              <th style="width:100px">Check Out</th>
+              <th style="width:120px">Work Hours</th>
+              <th style="width:80px">OT Hours</th>
+              <th style="width:90px">Status</th>
+              <th style="width:80px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e3f2fd;color:#1565c0">SJ</div><div><div style="font-weight:600;font-size:13px">Sarah Johnson</div><div style="font-size:11px;color:#888">EMP001</div></div></div></td>
+              <td><span class="chip" style="background:#e3f2fd;color:#1565c0;font-size:10px">Engineering</span></td>
+              <td style="color:#2e7d32;font-weight:600">—</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600">—</div><div class="dur-bar"><div class="dur-fill" style="width:0%;background:#1976d2"></div></div></td>
+              <td style="color:#888">—</td>
+              <td><span class="chip chip-absent" style="background:#e3f2fd;color:#1565c0">On Leave</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#f3e5f5;color:#6a1b9a">JD</div><div><div style="font-weight:600;font-size:13px">John Doe</div><div style="font-size:11px;color:#888">EMP002</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td style="color:#b36a00;font-weight:600">09:38 AM ⚠️</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 4m</div><div class="dur-bar"><div class="dur-fill" style="width:1%;background:#f9a825"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-late">Late</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e0f7fa;color:#00838f">EC</div><div><div style="font-weight:600;font-size:13px">Emily Chen</div><div style="font-size:11px;color:#888">EMP003</div></div></div></td>
+              <td><span class="chip" style="background:#fce4ec;color:#880e4f;font-size:10px">Marketing</span></td>
+              <td style="color:#2e7d32;font-weight:600">09:12 AM</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 30m</div><div class="dur-bar"><div class="dur-fill" style="width:5%;background:#1976d2"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-wfh">WFH</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#fff8e1;color:#b36a00">MB</div><div><div style="font-weight:600;font-size:13px">Michael Brown</div><div style="font-size:11px;color:#888">EMP004</div></div></div></td>
+              <td><span class="chip" style="background:#e3f2fd;color:#1565c0;font-size:10px">Engineering</span></td>
+              <td style="color:#2e7d32;font-weight:600">08:55 AM</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 47m</div><div class="dur-bar"><div class="dur-fill" style="width:7%;background:#1976d2"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-present">Present</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e0f7fa;color:#00838f">JW</div><div><div style="font-weight:600;font-size:13px">Jessica Williams</div><div style="font-size:11px;color:#888">EMP005</div></div></div></td>
+              <td><span class="chip" style="background:#e0f7fa;color:#00838f;font-size:10px">Operations</span></td>
+              <td style="color:#2e7d50;font-weight:600">09:00 AM</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 42m</div><div class="dur-bar"><div class="dur-fill" style="width:6%;background:#1976d2"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-present">Present</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e8f5e9;color:#2e7d32">DM</div><div><div style="font-weight:600;font-size:13px">David Martinez</div><div style="font-size:11px;color:#888">EMP006</div></div></div></td>
+              <td><span class="chip" style="background:#e3f2fd;color:#1565c0;font-size:10px">Engineering</span></td>
+              <td style="color:#2e7d32;font-weight:600">09:05 AM</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 37m</div><div class="dur-bar"><div class="dur-fill" style="width:5%;background:#1976d2"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-wfh">WFH</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#fce4ec;color:#880e4f">LA</div><div><div style="font-weight:600;font-size:13px">Lisa Anderson</div><div style="font-size:11px;color:#888">EMP007</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td style="color:#b36a00;font-weight:600">09:51 AM ⚠️</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#555">0h 0m</div><div class="dur-bar"><div class="dur-fill" style="width:0%;background:#f9a825"></div></div></td>
+              <td style="color:#6a1b9a;font-weight:600">0h</td>
+              <td><span class="chip chip-late">Late</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#ffebee;color:#c62828">DW</div><div><div style="font-weight:600;font-size:13px">Daniel Wilson</div><div style="font-size:11px;color:#888">EMP010</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td style="color:#c62828;font-weight:600">Not checked in</td>
+              <td style="color:#888">—</td>
+              <td><div style="font-size:13px;font-weight:600;color:#c62828">—</div><div class="dur-bar"><div class="dur-fill" style="width:0%;background:#ef5350"></div></div></td>
+              <td style="color:#888">—</td>
+              <td><span class="chip chip-absent">Absent</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pg-footer">
+          <span>Showing 1–8 of 14 employees &nbsp;·&nbsp; Today: 11 present · 3 absent/leave</span>
+          <div class="pg-btns">
+            <div class="pgb cur">1</div>
+            <div class="pgb">2</div>
+            <div class="pgb" style="width:auto;padding:0 10px">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

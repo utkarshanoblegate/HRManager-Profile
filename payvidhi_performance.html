@@ -1,0 +1,753 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700;color:#1a1a1a}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700;color:#1a1a1a}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-avatar{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.user-name{font-size:13px;font-weight:600}
+.user-role{font-size:11px;color:#888}
+.content{flex:1;padding:32px 40px}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:30px;font-weight:700}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px;align-items:center}
+.btn{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:10px;padding:18px 20px;border:1px solid #e8e8e8}
+.stat-lbl{font-size:12px;color:#888;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.stat-num{font-size:26px;font-weight:700;line-height:1}
+.stat-foot{font-size:11px;color:#888;margin-top:5px}
+.trend-up{color:#2e7d32;font-weight:600}
+.trend-dn{color:#c62828;font-weight:600}
+.cycle-banner{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
+.cycle-label{font-size:13px;font-weight:700;color:#1a1a1a}
+.cycle-sub{font-size:12px;color:#888;margin-top:2px}
+.cycle-prog-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
+.cycle-bar-bg{height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.cycle-bar-fill{height:100%;border-radius:4px;background:#1976d2;transition:width .4s}
+.cycle-steps{display:flex;gap:0;flex:1}
+.cs{flex:1;text-align:center;font-size:11px;padding:6px 4px;border-radius:0;color:#888;position:relative}
+.cs.done{color:#2e7d32;font-weight:600}
+.cs.active{color:#1565c0;font-weight:700}
+.cs-dot{width:10px;height:10px;border-radius:50%;margin:0 auto 4px;background:#e0e0e0}
+.cs.done .cs-dot{background:#2e7d32}
+.cs.active .cs-dot{background:#1976d2}
+.three-col{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:18px;margin-bottom:24px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+.box{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.box-title{font-size:15px;font-weight:700}
+.box-action{font-size:12px;color:#1976d2;cursor:pointer;font-weight:600}
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-exc{background:#e8f5e9;color:#2e7d32}
+.chip-good{background:#e3f2fd;color:#1565c0}
+.chip-avg{background:#fff8e1;color:#b36a00}
+.chip-low{background:#ffebee;color:#c62828}
+.chip-pend{background:#f5f5f5;color:#888}
+.chip-comp{background:#e8f5e9;color:#2e7d32}
+.chip-ip{background:#e3f2fd;color:#1565c0}
+.chip-nt{background:#f5f5f5;color:#888}
+.rating-bar{height:6px;border-radius:3px;background:#f0f0f0;overflow:hidden;margin-top:5px}
+.rating-fill{height:100%;border-radius:3px}
+.score-ring{position:relative;display:flex;align-items:center;justify-content:center}
+.dist-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.dist-row:last-child{border-bottom:none}
+.dist-label{width:90px;color:#555;flex-shrink:0}
+.dist-bar-wrap{flex:1;height:10px;background:#f5f5f5;border-radius:5px;overflow:hidden}
+.dist-bar{height:100%;border-radius:5px}
+.dist-count{width:24px;text-align:right;font-weight:600;color:#1a1a1a;flex-shrink:0}
+.dist-pct{width:34px;text-align:right;color:#888;font-size:12px;flex-shrink:0}
+.goal-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5}
+.goal-item:last-child{border-bottom:none}
+.goal-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:1px}
+.goal-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.goal-meta{font-size:11px;color:#888;margin-top:2px}
+.goal-prog{font-size:12px;font-weight:700;margin-top:6px;color:#1565c0}
+.goal-bar{height:5px;background:#f0f0f0;border-radius:3px;margin-top:4px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:3px;background:#1976d2}
+.top-emp-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.top-emp-item:last-child{border-bottom:none}
+.emp-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.emp-nm{font-size:13px;font-weight:600;color:#1a1a1a}
+.emp-rl{font-size:11px;color:#888}
+.star-row{display:flex;gap:1px;color:#ffa000;font-size:13px}
+.score-badge{margin-left:auto;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700;background:#e3f2fd;color:#1565c0}
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700}
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:18px}
+.tab{padding:11px 18px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .13s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.filters{display:flex;gap:10px;margin-bottom:14px}
+.search-box{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:42px}
+.search-box input{border:none;outline:none;font-size:13px;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.fsel{height:42px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:#f8f9fa}
+th{padding:13px 14px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:13px 14px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.emp-cell{display:flex;align-items:center;gap:10px}
+.stars{color:#ffa000;font-size:13px;letter-spacing:1px}
+.stars .empty{color:#e0e0e0}
+.progress-cell{display:flex;align-items:center;gap:8px}
+.prog-bar{flex:1;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px}
+.prog-pct{font-size:12px;font-weight:600;width:32px;text-align:right;color:#555}
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:middle;cursor:pointer;font-size:13px;border:none;transition:all .15s;align-items:center;justify-content:center}
+.act-v{background:#e3f2fd;color:#1565c0}
+.act-v:hover{background:#bbdefb}
+.act-e{background:#f5f5f5;color:#555}
+.act-e:hover{background:#e0e0e0}
+.act-row{display:flex;gap:5px}
+.pg-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.pg-btns{display:flex;gap:4px}
+.pgb{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555;background:#fff}
+.pgb.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+   <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item " >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Performance</div>
+      <div class="topbar-right">
+        <button class="badge-btn" aria-label="Notifications">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge">7</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div>
+            <div class="user-name">HR Manager</div>
+            <div class="user-role">Admin</div>
+          </div>
+          <div class="user-avatar">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Performance</div>
+          <div class="page-sub">Employee appraisals, goals &amp; KPIs — FY 2025–26 Annual Review Cycle</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            Export Report
+          </button>
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            360° Feedback
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Initiate Review
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Avg. Rating
+            <div class="stat-icon" style="background:#fff8e1;color:#b36a00;font-size:17px">&#9733;</div>
+          </div>
+          <div class="stat-num">3.8<span style="font-size:16px;color:#888;font-weight:400"> / 5</span></div>
+          <div class="stat-foot"><span class="trend-up">+0.3</span> vs last cycle</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Reviews Completed
+            <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32;font-size:15px">&#10003;</div>
+          </div>
+          <div class="stat-num" style="color:#2e7d32">9<span style="font-size:16px;color:#888;font-weight:400"> / 14</span></div>
+          <div class="stat-foot">64% completion rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Goals On Track
+            <div class="stat-icon" style="background:#e3f2fd;color:#1565c0;font-size:15px">&#128247;</div>
+          </div>
+          <div class="stat-num">38<span style="font-size:16px;color:#888;font-weight:400"> / 52</span></div>
+          <div class="stat-foot"><span class="trend-up">73%</span> goal achievement</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Pending Reviews
+            <div class="stat-icon" style="background:#fff8e1;color:#b36a00;font-size:15px">&#9201;</div>
+          </div>
+          <div class="stat-num" style="color:#e65100">5</div>
+          <div class="stat-foot">Due by Jun 30, 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Top Performers
+            <div class="stat-icon" style="background:#fce4ec;color:#880e4f;font-size:15px">&#127942;</div>
+          </div>
+          <div class="stat-num">3</div>
+          <div class="stat-foot">Rating 4.5+</div>
+        </div>
+      </div>
+
+      <div class="cycle-banner">
+        <div>
+          <div class="cycle-label">FY 2025–26 Annual Review Cycle</div>
+          <div class="cycle-sub">Apr 1, 2025 – Mar 31, 2026 &nbsp;·&nbsp; Review window: May 1 – Jun 30, 2026</div>
+        </div>
+        <div class="cycle-steps">
+          <div class="cs done"><div class="cs-dot"></div>Goal Setting</div>
+          <div class="cs done"><div class="cs-dot"></div>Mid-year Review</div>
+          <div class="cs done"><div class="cs-dot"></div>Self Assessment</div>
+          <div class="cs active"><div class="cs-dot"></div>Manager Review</div>
+          <div class="cs"><div class="cs-dot"></div>Calibration</div>
+          <div class="cs"><div class="cs-dot"></div>Final Ratings</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:13px;font-weight:700;color:#1976d2">Step 4 of 6</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">67% complete</div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Rating Distribution</div>
+            <span class="box-action">View All</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
+            <div style="text-align:center">
+              <div style="font-size:44px;font-weight:700;color:#1a1a1a;line-height:1">3.8</div>
+              <div style="font-size:13px;color:#888;margin-top:4px">Org Average</div>
+              <div style="display:flex;gap:2px;justify-content:center;margin-top:6px;color:#ffa000;font-size:16px">
+                &#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span>
+              </div>
+            </div>
+            <div style="flex:1">
+              <div class="dist-row">
+                <span class="dist-label" style="color:#1b5e20;font-weight:600">Exceptional (5)</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:14%;background:#2e7d32"></div></div>
+                <span class="dist-count">2</span>
+                <span class="dist-pct">14%</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-label" style="color:#1565c0;font-weight:600">Exceeds (4–4.9)</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:21%;background:#1976d2"></div></div>
+                <span class="dist-count">3</span>
+                <span class="dist-pct">21%</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-label" style="color:#b36a00;font-weight:600">Meets (3–3.9)</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:43%;background:#f9a825"></div></div>
+                <span class="dist-count">6</span>
+                <span class="dist-pct">43%</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-label" style="color:#e65100;font-weight:600">Needs Dev (2–2.9)</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:14%;background:#ef6c00"></div></div>
+                <span class="dist-count">2</span>
+                <span class="dist-pct">14%</span>
+              </div>
+              <div class="dist-row">
+                <span class="dist-label" style="color:#c62828;font-weight:600">Below Exp (&lt;2)</span>
+                <div class="dist-bar-wrap"><div class="dist-bar" style="width:7%;background:#e53935"></div></div>
+                <span class="dist-count">1</span>
+                <span class="dist-pct">7%</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+            <div><div style="font-size:18px;font-weight:700;color:#2e7d32">5</div><div style="font-size:11px;color:#888">Promotions due</div></div>
+            <div style="border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5"><div style="font-size:18px;font-weight:700;color:#1976d2">3</div><div style="font-size:11px;color:#888">PIPs initiated</div></div>
+            <div><div style="font-size:18px;font-weight:700;color:#e65100">2</div><div style="font-size:11px;color:#888">On notice</div></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Top Performers</div>
+            <span class="box-action">Full Ranking</span>
+          </div>
+          <div class="top-emp-item">
+            <div style="font-size:15px;font-weight:700;color:#bbb;width:18px;text-align:center;flex-shrink:0">1</div>
+            <div class="emp-av" style="background:#e3f2fd;color:#1565c0">SJ</div>
+            <div style="flex:1">
+              <div class="emp-nm">Sarah Johnson</div>
+              <div class="emp-rl">Senior Developer · Engineering</div>
+              <div class="star-row" style="margin-top:3px;font-size:12px">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="score-badge" style="background:#e8f5e9;color:#2e7d32">4.9</div>
+          </div>
+          <div class="top-emp-item">
+            <div style="font-size:15px;font-weight:700;color:#bbb;width:18px;text-align:center;flex-shrink:0">2</div>
+            <div class="emp-av" style="background:#f3e5f5;color:#6a1b9a">JW</div>
+            <div style="flex:1">
+              <div class="emp-nm">Jessica Williams</div>
+              <div class="emp-rl">Operations Manager · Ops</div>
+              <div class="star-row" style="margin-top:3px;font-size:12px">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="score-badge" style="background:#e8f5e9;color:#2e7d32">4.7</div>
+          </div>
+          <div class="top-emp-item">
+            <div style="font-size:15px;font-weight:700;color:#bbb;width:18px;text-align:center;flex-shrink:0">3</div>
+            <div class="emp-av" style="background:#e8f5e9;color:#2e7d32">DM</div>
+            <div style="flex:1">
+              <div class="emp-nm">David Martinez</div>
+              <div class="emp-rl">Backend Developer · Engineering</div>
+              <div class="star-row" style="margin-top:3px;font-size:12px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></div>
+            </div>
+            <div class="score-badge">4.5</div>
+          </div>
+          <div class="top-emp-item">
+            <div style="font-size:15px;font-weight:700;color:#bbb;width:18px;text-align:center;flex-shrink:0">4</div>
+            <div class="emp-av" style="background:#e0f7fa;color:#00838f">EC</div>
+            <div style="flex:1">
+              <div class="emp-nm">Emily Chen</div>
+              <div class="emp-rl">Marketing Lead · Marketing</div>
+              <div class="star-row" style="margin-top:3px;font-size:12px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></div>
+            </div>
+            <div class="score-badge">4.2</div>
+          </div>
+          <div class="top-emp-item">
+            <div style="font-size:15px;font-weight:700;color:#bbb;width:18px;text-align:center;flex-shrink:0">5</div>
+            <div class="emp-av" style="background:#fff8e1;color:#b36a00">MB</div>
+            <div style="flex:1">
+              <div class="emp-nm">Michael Brown</div>
+              <div class="emp-rl">Product Designer · Engineering</div>
+              <div class="star-row" style="margin-top:3px;font-size:12px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></div>
+            </div>
+            <div class="score-badge">4.0</div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Dept. Performance</div>
+            <span class="box-action">Details</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="font-weight:600">Engineering</span><span style="font-weight:700;color:#1976d2">4.2 / 5</span></div>
+              <div class="rating-bar"><div class="rating-fill" style="width:84%;background:#1976d2"></div></div>
+              <div style="font-size:11px;color:#888;margin-top:3px">5 employees · 4 reviews done</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="font-weight:600">Sales</span><span style="font-weight:700;color:#f9a825">3.6 / 5</span></div>
+              <div class="rating-bar"><div class="rating-fill" style="width:72%;background:#f9a825"></div></div>
+              <div style="font-size:11px;color:#888;margin-top:3px">3 employees · 2 reviews done</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="font-weight:600">Marketing</span><span style="font-weight:700;color:#2e7d32">4.0 / 5</span></div>
+              <div class="rating-bar"><div class="rating-fill" style="width:80%;background:#66bb6a"></div></div>
+              <div style="font-size:11px;color:#888;margin-top:3px">3 employees · 3 reviews done</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="font-weight:600">Operations</span><span style="font-weight:700;color:#ab47bc">3.9 / 5</span></div>
+              <div class="rating-bar"><div class="rating-fill" style="width:78%;background:#ab47bc"></div></div>
+              <div style="font-size:11px;color:#888;margin-top:3px">3 employees · 0 reviews done</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;border-top:1px solid #f0f0f0;padding-top:14px">
+            <div class="box-title" style="font-size:13px;margin-bottom:10px">KPI Category Scores</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span style="color:#555">Productivity</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:80px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:82%;height:100%;background:#1976d2;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:26px;text-align:right">4.1</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span style="color:#555">Quality of Work</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:80px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:76%;height:100%;background:#1976d2;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:26px;text-align:right">3.8</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span style="color:#555">Collaboration</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:80px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:90%;height:100%;background:#66bb6a;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:26px;text-align:right">4.5</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span style="color:#555">Goal Attainment</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:80px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:68%;height:100%;background:#f9a825;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:26px;text-align:right">3.4</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+                <span style="color:#555">Innovation</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:80px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:72%;height:100%;background:#ab47bc;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:26px;text-align:right">3.6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Org Goals Tracker — FY 2025–26</div>
+            <span class="box-action">Manage Goals</span>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon" style="background:#e3f2fd;color:#1565c0">&#128200;</div>
+            <div style="flex:1">
+              <div class="goal-name">Increase Revenue by 25%</div>
+              <div class="goal-meta">Sales Dept &nbsp;·&nbsp; Q4 Target &nbsp;·&nbsp; Owner: John Doe</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div class="goal-bar" style="flex:1"><div class="goal-bar-fill" style="width:78%;background:#1976d2"></div></div>
+                <span style="font-size:12px;font-weight:700;color:#1976d2;width:30px;text-align:right">78%</span>
+              </div>
+            </div>
+            <span class="chip chip-ip" style="margin-left:8px;align-self:flex-start">In Progress</span>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon" style="background:#e8f5e9;color:#2e7d32">&#127919;</div>
+            <div style="flex:1">
+              <div class="goal-name">Deploy New Product Features (v3.2)</div>
+              <div class="goal-meta">Engineering &nbsp;·&nbsp; Q3 Target &nbsp;·&nbsp; Owner: Sarah Johnson</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div class="goal-bar" style="flex:1"><div class="goal-bar-fill" style="width:100%;background:#2e7d32"></div></div>
+                <span style="font-size:12px;font-weight:700;color:#2e7d32;width:30px;text-align:right">100%</span>
+              </div>
+            </div>
+            <span class="chip chip-comp" style="margin-left:8px;align-self:flex-start">Completed</span>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon" style="background:#fce4ec;color:#880e4f">&#128203;</div>
+            <div style="flex:1">
+              <div class="goal-name">Reduce Customer Churn to &lt;5%</div>
+              <div class="goal-meta">Marketing &nbsp;·&nbsp; Annual &nbsp;·&nbsp; Owner: Emily Chen</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div class="goal-bar" style="flex:1"><div class="goal-bar-fill" style="width:60%;background:#ab47bc"></div></div>
+                <span style="font-size:12px;font-weight:700;color:#ab47bc;width:30px;text-align:right">60%</span>
+              </div>
+            </div>
+            <span class="chip chip-ip" style="margin-left:8px;align-self:flex-start">In Progress</span>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon" style="background:#fff8e1;color:#b36a00">&#128119;</div>
+            <div style="flex:1">
+              <div class="goal-name">Hire &amp; Onboard 8 Engineers</div>
+              <div class="goal-meta">HR / Engineering &nbsp;·&nbsp; Annual &nbsp;·&nbsp; Owner: HR Manager</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div class="goal-bar" style="flex:1"><div class="goal-bar-fill" style="width:87%;background:#f9a825"></div></div>
+                <span style="font-size:12px;font-weight:700;color:#b36a00;width:30px;text-align:right">87%</span>
+              </div>
+            </div>
+            <span class="chip chip-ip" style="margin-left:8px;align-self:flex-start">In Progress</span>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon" style="background:#ffebee;color:#c62828">&#128202;</div>
+            <div style="flex:1">
+              <div class="goal-name">Achieve ISO 27001 Certification</div>
+              <div class="goal-meta">Operations &nbsp;·&nbsp; Q4 Target &nbsp;·&nbsp; Owner: Jessica Williams</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <div class="goal-bar" style="flex:1"><div class="goal-bar-fill" style="width:35%;background:#ef5350"></div></div>
+                <span style="font-size:12px;font-weight:700;color:#c62828;width:30px;text-align:right">35%</span>
+              </div>
+            </div>
+            <span class="chip chip-nt" style="margin-left:8px;align-self:flex-start">At Risk</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Recent Review Activity</div>
+            <span class="box-action">All Activity</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#2e7d32;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">Sarah Johnson self-assessment submitted</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Engineering &nbsp;·&nbsp; 2 hours ago</div>
+              </div>
+              <span class="chip chip-comp" style="font-size:10px">Done</span>
+            </div>
+            <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#1976d2;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">Manager review initiated for John Doe</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Sales &nbsp;·&nbsp; 5 hours ago</div>
+              </div>
+              <span class="chip chip-ip" style="font-size:10px">In Review</span>
+            </div>
+            <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#f9a825;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">360° feedback reminder sent to 5 managers</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">All departments &nbsp;·&nbsp; Yesterday</div>
+              </div>
+              <span class="chip chip-pend" style="font-size:10px">Reminder</span>
+            </div>
+            <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#2e7d32;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">Emily Chen review completed — rated 4.2</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Marketing &nbsp;·&nbsp; May 11, 2026</div>
+              </div>
+              <span class="chip chip-comp" style="font-size:10px">Done</span>
+            </div>
+            <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#e53935;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">PIP initiated for Daniel Wilson</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Sales &nbsp;·&nbsp; May 10, 2026</div>
+              </div>
+              <span class="chip chip-low" style="font-size:10px">PIP</span>
+            </div>
+            <div style="display:flex;gap:12px;padding:11px 0;align-items:flex-start">
+              <div style="width:8px;height:8px;border-radius:50%;background:#ab47bc;margin-top:5px;flex-shrink:0"></div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#1a1a1a">David Martinez nominated for promotion</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Engineering &nbsp;·&nbsp; May 9, 2026</div>
+              </div>
+              <span class="chip" style="font-size:10px;background:#f3e5f5;color:#6a1b9a">Promotion</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <div class="section-title">Employee Performance Register</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Calibrate Ratings</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Send Reminders</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All Employees (14)</div>
+        <div class="tab">Completed (9)</div>
+        <div class="tab">In Progress (0)</div>
+        <div class="tab">Not Started (5)</div>
+        <div class="tab">PIP Employees (3)</div>
+        <div class="tab">Promotions (5)</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search employee name or ID..." />
+        </div>
+        <select class="fsel">
+          <option>All Departments</option>
+          <option>Engineering</option>
+          <option>Sales</option>
+          <option>Marketing</option>
+          <option>Operations</option>
+        </select>
+        <select class="fsel">
+          <option>All Ratings</option>
+          <option>Exceptional (5)</option>
+          <option>Exceeds (4–4.9)</option>
+          <option>Meets (3–3.9)</option>
+          <option>Needs Dev</option>
+        </select>
+        <select class="fsel">
+          <option>FY 2025–26</option>
+          <option>FY 2024–25</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:190px">Employee</th>
+              <th style="width:110px">Department</th>
+              <th style="width:90px">Rating</th>
+              <th style="width:80px">Stars</th>
+              <th style="width:160px">Goals Progress</th>
+              <th style="width:110px">Review Status</th>
+              <th style="width:100px">Self-Assess</th>
+              <th style="width:80px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#e3f2fd;color:#1565c0">SJ</div><div><div style="font-weight:600;font-size:13px">Sarah Johnson</div><div style="font-size:11px;color:#888">EMP001</div></div></div></td>
+              <td><span class="chip" style="background:#e8f5e9;color:#2e7d32;font-size:10px">Engineering</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#2e7d32">4.9</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:95%;background:#2e7d32"></div></div><span class="prog-pct">95%</span></div></td>
+              <td><span class="chip chip-comp">Completed</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v" title="View Review">&#128065;</button><button class="act-btn act-e" title="Edit">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#e0f7fa;color:#00838f">JW</div><div><div style="font-weight:600;font-size:13px">Jessica Williams</div><div style="font-size:11px;color:#888">EMP005</div></div></div></td>
+              <td><span class="chip" style="background:#e3f2fd;color:#1565c0;font-size:10px">Operations</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#2e7d32">4.7</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:88%;background:#2e7d32"></div></div><span class="prog-pct">88%</span></div></td>
+              <td><span class="chip chip-comp">Completed</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#e8f5e9;color:#2e7d32">DM</div><div><div style="font-weight:600;font-size:13px">David Martinez</div><div style="font-size:11px;color:#888">EMP006</div></div></div></td>
+              <td><span class="chip" style="background:#e8f5e9;color:#2e7d32;font-size:10px">Engineering</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#1976d2">4.5</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:80%;background:#1976d2"></div></div><span class="prog-pct">80%</span></div></td>
+              <td><span class="chip chip-comp">Completed</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#e0f7fa;color:#00838f">EC</div><div><div style="font-weight:600;font-size:13px">Emily Chen</div><div style="font-size:11px;color:#888">EMP003</div></div></div></td>
+              <td><span class="chip" style="background:#fce4ec;color:#880e4f;font-size:10px">Marketing</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#1976d2">4.2</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:76%;background:#1976d2"></div></div><span class="prog-pct">76%</span></div></td>
+              <td><span class="chip chip-comp">Completed</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#fff8e1;color:#b36a00">MB</div><div><div style="font-weight:600;font-size:13px">Michael Brown</div><div style="font-size:11px;color:#888">EMP004</div></div></div></td>
+              <td><span class="chip" style="background:#e8f5e9;color:#2e7d32;font-size:10px">Engineering</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#b36a00">4.0</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:70%;background:#f9a825"></div></div><span class="prog-pct">70%</span></div></td>
+              <td><span class="chip chip-ip">In Review</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#f3e5f5;color:#6a1b9a">JD</div><div><div style="font-weight:600;font-size:13px">John Doe</div><div style="font-size:11px;color:#888">EMP002</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#b36a00">3.6</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:65%;background:#f9a825"></div></div><span class="prog-pct">65%</span></div></td>
+              <td><span class="chip chip-ip">In Review</span></td>
+              <td><span class="chip chip-comp">Submitted</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#fce4ec;color:#880e4f">LA</div><div><div style="font-weight:600;font-size:13px">Lisa Anderson</div><div style="font-size:11px;color:#888">EMP007</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#b36a00">3.4</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;&#9733;<span style="color:#e0e0e0">&#9733;&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:58%;background:#f9a825"></div></div><span class="prog-pct">58%</span></div></td>
+              <td><span class="chip chip-pend">Not Started</span></td>
+              <td><span class="chip chip-pend">Pending</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-av" style="background:#ffebee;color:#c62828">DW</div><div><div style="font-weight:600;font-size:13px">Daniel Wilson</div><div style="font-size:11px;color:#888">EMP010</div></div></div></td>
+              <td><span class="chip" style="background:#fff8e1;color:#b36a00;font-size:10px">Sales</span></td>
+              <td><span style="font-size:16px;font-weight:700;color:#c62828">2.1</span></td>
+              <td><span style="color:#ffa000;font-size:13px">&#9733;&#9733;<span style="color:#e0e0e0">&#9733;&#9733;&#9733;</span></span></td>
+              <td><div class="progress-cell"><div class="prog-bar"><div class="prog-fill" style="width:30%;background:#e53935"></div></div><span class="prog-pct">30%</span></div></td>
+              <td><span class="chip chip-low">PIP Active</span></td>
+              <td><span class="chip chip-pend">Pending</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">&#128065;</button><button class="act-btn act-e">&#9998;</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pg-footer">
+          <span>Showing 1–8 of 14 employees &nbsp;·&nbsp; Avg. org rating: <strong>3.8 / 5</strong></span>
+          <div class="pg-btns">
+            <div class="pgb cur">1</div>
+            <div class="pgb">2</div>
+            <div class="pgb" style="width:auto;padding:0 10px">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,651 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-left:auto;background:#e53935;color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-left{display:flex;flex-direction:column}
+.topbar-title{font-size:20px;font-weight:700}
+.topbar-date{font-size:12px;color:#888;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.notif-badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-pill{display:flex;align-items:center;gap:10px;background:#f8f9fa;border-radius:30px;padding:6px 14px 6px 6px;cursor:pointer}
+.user-av{width:34px;height:34px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px}
+.user-name{font-size:13px;font-weight:600}
+.user-role{font-size:11px;color:#888}
+.content{flex:1;padding:28px 36px;overflow-y:auto}
+
+/* greeting */
+.greeting-bar{background:linear-gradient(135deg,#1565c0,#1976d2,#1e88e5);border-radius:14px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;color:#fff;position:relative;overflow:hidden}
+.greeting-bar::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+.greeting-bar::after{content:'';position:absolute;right:60px;bottom:-60px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.04)}
+.greet-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.greet-sub{font-size:13px;opacity:.85}
+.greet-right{display:flex;gap:24px;z-index:1}
+.greet-stat{text-align:center}
+.greet-num{font-size:28px;font-weight:700;line-height:1}
+.greet-label{font-size:11px;opacity:.8;margin-top:3px}
+.greet-divider{width:1px;background:rgba(255,255,255,.25)}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-card{background:#fff;border-radius:10px;padding:18px 18px 14px;border:1px solid #e8e8e8;cursor:pointer;transition:box-shadow .15s}
+.kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.kpi-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.kpi-trend{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.trend-up{background:#e8f5e9;color:#2e7d32}
+.trend-dn{background:#ffebee;color:#c62828}
+.trend-nt{background:#f5f5f5;color:#888}
+.kpi-num{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-label{font-size:12px;color:#888}
+.kpi-bar{height:3px;background:#f0f0f0;border-radius:2px;margin-top:12px;overflow:hidden}
+.kpi-bar-fill{height:100%;border-radius:2px}
+
+/* main grid */
+.main-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
+.box{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.box-title{font-size:14px;font-weight:700}
+.box-action{font-size:12px;color:#1976d2;cursor:pointer;font-weight:600}
+
+/* bar chart */
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:120px;padding-top:4px}
+.bc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bc-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px}
+.bc-lbl{font-size:9px;color:#aaa;white-space:nowrap}
+.bc-val{font-size:9px;font-weight:700;color:#555}
+
+/* donut */
+.donut-row{display:flex;align-items:center;gap:16px}
+.mini-leg{display:flex;flex-direction:column;gap:7px;flex:1}
+.ml-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.ml-left{display:flex;align-items:center;gap:7px}
+.ml-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* attendance ring */
+.ring-wrap{position:relative;flex-shrink:0}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1}
+.ring-num{font-size:20px;font-weight:700}
+.ring-sub{font-size:10px;color:#888;margin-top:2px}
+
+/* pending item */
+.pend-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5}
+.pend-item:last-child{border-bottom:none}
+.pend-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.pend-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.pend-info{font-size:11px;color:#888;margin-top:1px}
+.pend-chip{margin-left:auto;white-space:nowrap;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.chip-amber{background:#fff8e1;color:#b36a00}
+.chip-red{background:#ffebee;color:#c62828}
+.chip-blue{background:#e3f2fd;color:#1565c0}
+.chip-green{background:#e8f5e9;color:#2e7d32}
+.chip-purple{background:#f3e5f5;color:#6a1b9a}
+
+/* payroll summary */
+.pay-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.pay-row:last-child{border-bottom:none}
+.pay-label{color:#555;display:flex;align-items:center;gap:7px}
+.pay-dot{width:9px;height:9px;border-radius:50%}
+.pay-val{font-weight:700}
+
+/* timeline */
+.tl-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #f5f5f5}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-text{font-size:13px;font-weight:600;color:#1a1a1a}
+.tl-meta{font-size:11px;color:#888;margin-top:2px}
+
+/* bottom grid */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
+
+/* on leave today */
+.ol-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5}
+.ol-item:last-child{border-bottom:none}
+.ol-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+
+/* compliance */
+.comp-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.comp-row:last-child{border-bottom:none}
+.comp-name{font-weight:600;color:#1a1a1a;display:flex;align-items:center;gap:7px}
+.comp-icon{font-size:14px}
+
+/* quick actions */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.qa-card{background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.qa-card:hover{border-color:#1976d2;background:#f0f7ff}
+.qa-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.qa-text{font-size:13px;font-weight:700;color:#1a1a1a}
+.qa-sub{font-size:11px;color:#888;margin-top:2px}
+
+/* two-col bottom */
+.two-col-bottom{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.hr-mini{height:1px;background:#f0f0f0;margin:8px 0}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item active" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-date">Monday, 18 May 2026 &nbsp;·&nbsp; FY 2025–26</div>
+      </div>
+      <div class="topbar-right">
+        <button class="badge-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="notif-badge">7</span>
+        </button>
+        <div class="user-pill">
+          <div class="user-av">HR</div>
+          <div>
+            <div class="user-name">HR Manager</div>
+            <div class="user-role">Admin · PayVidhi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Greeting Banner -->
+      <div class="greeting-bar">
+        <div>
+          <div class="greet-title">Good morning, HR Manager 👋</div>
+          <div class="greet-sub">You have 12 leave requests, 5 pending reviews &amp; 4 documents awaiting e-signature today.</div>
+        </div>
+        <div class="greet-right">
+          <div class="greet-stat">
+            <div class="greet-num">14</div>
+            <div class="greet-label">Total Employees</div>
+          </div>
+          <div class="greet-divider"></div>
+          <div class="greet-stat">
+            <div class="greet-num">3</div>
+            <div class="greet-label">On Leave Today</div>
+          </div>
+          <div class="greet-divider"></div>
+          <div class="greet-stat">
+            <div class="greet-num">11</div>
+            <div class="greet-label">Present Today</div>
+          </div>
+          <div class="greet-divider"></div>
+          <div class="greet-stat">
+            <div class="greet-num">₹18.1L</div>
+            <div class="greet-label">May Net Payout</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:#e3f2fd;color:#1565c0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <span class="kpi-trend trend-up">+3 ↑</span>
+          </div>
+          <div class="kpi-num">14</div>
+          <div class="kpi-label">Total Employees</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:100%;background:#1976d2"></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:#e8f5e9;color:#2e7d32">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <span class="kpi-trend trend-up">91.3%</span>
+          </div>
+          <div class="kpi-num">11</div>
+          <div class="kpi-label">Present Today</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:91%;background:#2e7d32"></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:#fff8e1;color:#b36a00">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <span class="kpi-trend chip-amber">12 open</span>
+          </div>
+          <div class="kpi-num" style="color:#e65100">3</div>
+          <div class="kpi-label">On Leave Today</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:21%;background:#f9a825"></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:#e8f5e9;color:#2e7d32">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+            </div>
+            <span class="kpi-trend trend-up">+3.2%</span>
+          </div>
+          <div class="kpi-num">₹21.4L</div>
+          <div class="kpi-label">Gross Payroll — May</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:85%;background:#2e7d32"></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:#f3e5f5;color:#6a1b9a">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 4 12 14.01 9 11.01"/><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/></svg>
+            </div>
+            <span class="kpi-trend trend-up">3.8/5</span>
+          </div>
+          <div class="kpi-num">64%</div>
+          <div class="kpi-label">Reviews Complete</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:64%;background:#ab47bc"></div></div>
+        </div>
+      </div>
+
+      <!-- Main 3-col grid -->
+      <div class="main-grid">
+
+        <!-- Attendance Chart -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Monthly Attendance — May 2026</div>
+            <span class="box-action">Details</span>
+          </div>
+          <div class="chart-bars">
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#bbdefb"></div><span class="bc-lbl">1</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#bbdefb"></div><span class="bc-lbl">2</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#90caf9"></div><span class="bc-lbl">5</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#90caf9"></div><span class="bc-lbl">6</span></div>
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#90caf9"></div><span class="bc-lbl">7</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#64b5f6"></div><span class="bc-lbl">8</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#64b5f6"></div><span class="bc-lbl">9</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#42a5f5"></div><span class="bc-lbl">12</span></div>
+            <div class="bc"><span class="bc-val">14</span><div class="bc-bar" style="height:100%;background:#42a5f5"></div><span class="bc-lbl">13</span></div>
+            <div class="bc"><span class="bc-val">12</span><div class="bc-bar" style="height:85%;background:#42a5f5"></div><span class="bc-lbl">14</span></div>
+            <div class="bc"><span class="bc-val">13</span><div class="bc-bar" style="height:92%;background:#42a5f5"></div><span class="bc-lbl">15</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">0</span><div class="bc-bar" style="height:0%;background:#e0e0e0"></div><span class="bc-lbl" style="color:#ddd">S</span></div>
+            <div class="bc"><span class="bc-val">11</span><div class="bc-bar" style="height:78%;background:#1976d2;border:2px solid #1565c0"></div><span class="bc-lbl" style="color:#1976d2;font-weight:700">18</span></div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+            <span style="font-size:12px;color:#888;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#1976d2;display:inline-block"></span>Today: 11</span>
+            <span style="font-size:12px;color:#888;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#e0e0e0;display:inline-block"></span>Weekend</span>
+            <span style="font-size:12px;color:#2e7d32;font-weight:600">Avg: 12.7 / 14</span>
+          </div>
+        </div>
+
+        <!-- Leave Distribution -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Leave Requests — May</div>
+            <span class="box-action">View All</span>
+          </div>
+          <div class="donut-row">
+            <div class="ring-wrap">
+              <svg width="110" height="110" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#f0f0f0" stroke-width="16"/>
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#1976d2" stroke-width="16" stroke-dasharray="117 159" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#66bb6a" stroke-width="16" stroke-dasharray="57 159" stroke-dashoffset="-117" transform="rotate(-90 55 55)"/>
+                <circle cx="55" cy="55" r="44" fill="none" stroke="#ef5350" stroke-width="16" stroke-dasharray="38 159" stroke-dashoffset="-174" transform="rotate(-90 55 55)"/>
+                <text x="55" y="50" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">42</text>
+                <text x="55" y="64" text-anchor="middle" font-size="10" fill="#888">requests</text>
+              </svg>
+            </div>
+            <div class="mini-leg">
+              <div class="ml-row">
+                <div class="ml-left"><span class="ml-dot" style="background:#1976d2"></span><span style="color:#555">Pending</span></div>
+                <div style="display:flex;gap:6px"><span style="font-weight:700">12</span><span style="color:#888;font-size:11px">29%</span></div>
+              </div>
+              <div class="ml-row">
+                <div class="ml-left"><span class="ml-dot" style="background:#66bb6a"></span><span style="color:#555">Approved</span></div>
+                <div style="display:flex;gap:6px"><span style="font-weight:700">24</span><span style="color:#888;font-size:11px">57%</span></div>
+              </div>
+              <div class="ml-row">
+                <div class="ml-left"><span class="ml-dot" style="background:#ef5350"></span><span style="color:#555">Rejected</span></div>
+                <div style="display:flex;gap:6px"><span style="font-weight:700">6</span><span style="color:#888;font-size:11px">14%</span></div>
+              </div>
+              <div class="hr-mini"></div>
+              <div style="font-size:11px;color:#888">Leave types this month:</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">
+                <span style="font-size:10px;background:#e3f2fd;color:#1565c0;padding:2px 7px;border-radius:20px;font-weight:600">Annual 18</span>
+                <span style="font-size:10px;background:#f3e5f5;color:#6a1b9a;padding:2px 7px;border-radius:20px;font-weight:600">Sick 12</span>
+                <span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 7px;border-radius:20px;font-weight:600">Casual 8</span>
+                <span style="font-size:10px;background:#fff8e1;color:#b36a00;padding:2px 7px;border-radius:20px;font-weight:600">Med 4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Pending Approvals</div>
+            <span class="box-action">See All (12)</span>
+          </div>
+          <div class="pend-item">
+            <div class="pend-av" style="background:#e3f2fd;color:#1565c0">SJ</div>
+            <div style="flex:1">
+              <div class="pend-name">Sarah Johnson</div>
+              <div class="pend-info">Annual Leave · May 14–16</div>
+            </div>
+            <span class="pend-chip chip-amber">Leave</span>
+          </div>
+          <div class="pend-item">
+            <div class="pend-av" style="background:#f3e5f5;color:#6a1b9a">JD</div>
+            <div style="flex:1">
+              <div class="pend-name">John Doe</div>
+              <div class="pend-info">Sick Leave · May 13</div>
+            </div>
+            <span class="pend-chip chip-amber">Leave</span>
+          </div>
+          <div class="pend-item">
+            <div class="pend-av" style="background:#e8f5e9;color:#2e7d32">MB</div>
+            <div style="flex:1">
+              <div class="pend-name">Michael Brown</div>
+              <div class="pend-info">Performance Review · FY26</div>
+            </div>
+            <span class="pend-chip chip-purple">Review</span>
+          </div>
+          <div class="pend-item">
+            <div class="pend-av" style="background:#fff8e1;color:#b36a00">DW</div>
+            <div style="flex:1">
+              <div class="pend-name">Daniel Wilson</div>
+              <div class="pend-info">NDA e-Signature · Contract</div>
+            </div>
+            <span class="pend-chip chip-red">e-Sign</span>
+          </div>
+          <div class="pend-item">
+            <div class="pend-av" style="background:#e0f7fa;color:#00838f">EC</div>
+            <div style="flex:1">
+              <div class="pend-name">Emily Chen</div>
+              <div class="pend-info">Casual Leave · May 20–21</div>
+            </div>
+            <span class="pend-chip chip-amber">Leave</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom 3-col grid -->
+      <div class="bottom-grid">
+
+        <!-- Payroll Snapshot -->
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Payroll Snapshot — May 2026</div>
+            <span class="box-action">Full Payroll</span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label"><span class="pay-dot" style="background:#1976d2"></span>Basic Salary</span>
+            <span class="pay-val">₹8,98,200</span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label"><span class="pay-dot" style="background:#66bb6a"></span>HRA + Allowances</span>
+            <span class="pay-val">₹7,70,200</span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label"><span class="pay-dot" style="background:#ffd54f"></span>Performance Bonus</span>
+            <span class="pay-val">₹1,71,600</span>
+          </div>
+          <div style="border-top:1px dashed #e0e0e0;margin:8px 0"></div>
+          <div class="pay-row">
+            <span class="pay-label" style="font-weight:700">Gross Total</span>
+            <span class="pay-val" style="font-size:14px">₹21,40,000</span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label"><span class="pay-dot" style="background:#ef5350"></span>PF + TDS + PT</span>
+            <span class="pay-val" style="color:#c62828">– ₹3,27,600</span>
+          </div>
+          <div style="border-top:2px solid #e0e0e0;margin:8px 0"></div>
+          <div class="pay-row">
+            <span class="pay-label" style="font-weight:700;font-size:14px">Net Payout</span>
+            <span class="pay-val" style="font-size:16px;color:#1565c0">₹18,12,400</span>
+          </div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:#e8f5e9;border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#2e7d32">12</div>
+              <div style="font-size:11px;color:#888">Paid</div>
+            </div>
+            <div style="background:#fff8e1;border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#b36a00">2</div>
+              <div style="font-size:11px;color:#888">Pending</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- On Leave Today + Quick Actions -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="box" style="flex:1">
+            <div class="box-header">
+              <div class="box-title">On Leave Today</div>
+              <span class="box-action">Calendar</span>
+            </div>
+            <div class="ol-item">
+              <div class="ol-av" style="background:#e3f2fd;color:#1565c0">SJ</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">Sarah Johnson</div>
+                <div style="font-size:11px;color:#888">Annual Leave · May 14–16</div>
+              </div>
+              <span style="font-size:10px;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:20px;font-weight:700">Annual</span>
+            </div>
+            <div class="ol-item">
+              <div class="ol-av" style="background:#f3e5f5;color:#6a1b9a">JD</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">John Doe</div>
+                <div style="font-size:11px;color:#888">Sick Leave · Today only</div>
+              </div>
+              <span style="font-size:10px;background:#f3e5f5;color:#6a1b9a;padding:2px 8px;border-radius:20px;font-weight:700">Sick</span>
+            </div>
+            <div class="ol-item">
+              <div class="ol-av" style="background:#e8f5e9;color:#2e7d32">LA</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600">Lisa Anderson</div>
+                <div style="font-size:11px;color:#888">Work from Home</div>
+              </div>
+              <span style="font-size:10px;background:#e0f7fa;color:#00838f;padding:2px 8px;border-radius:20px;font-weight:700">WFH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity + Compliance -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="box" style="flex:1">
+            <div class="box-header">
+              <div class="box-title">Compliance Alerts</div>
+              <span class="box-action">Manage</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-name"><span class="comp-icon">✅</span>PF Filing — Apr</span>
+              <span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:20px">Filed</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-name"><span class="comp-icon">✅</span>ESIC — Apr</span>
+              <span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:20px">Filed</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-name"><span class="comp-icon">⚠️</span>TDS Form 24Q</span>
+              <span style="font-size:11px;font-weight:700;background:#fff8e1;color:#b36a00;padding:2px 8px;border-radius:20px">Due Jun 30</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-name"><span class="comp-icon">🔴</span>Form 16 / 16A</span>
+              <span style="font-size:11px;font-weight:700;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:20px">Pending</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-name"><span class="comp-icon">✅</span>Prof. Tax — May</span>
+              <span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:20px">Paid</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions + Activity Feed -->
+      <div class="two-col-bottom">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Recent Activity</div>
+            <span class="box-action">All Activity</span>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#2e7d32"></div>
+            <div><div class="tl-text">Payroll processed for May 2026 — ₹18.1L disbursed</div><div class="tl-meta">Finance · 2 hours ago</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#1976d2"></div>
+            <div><div class="tl-text">Leave request approved — Sarah Johnson (Annual, May 14–16)</div><div class="tl-meta">HR Manager · 3 hours ago</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#b36a00"></div>
+            <div><div class="tl-text">Offer_Letter_EmilyCheng_FY26.pdf uploaded to Documents</div><div class="tl-meta">HR Manager · 4 hours ago</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#6a1b9a"></div>
+            <div><div class="tl-text">Performance review initiated for John Doe — Sales dept.</div><div class="tl-meta">HR Manager · Yesterday</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#c62828"></div>
+            <div><div class="tl-text">PIP initiated for Daniel Wilson — Sales dept.</div><div class="tl-meta">HR Manager · May 10, 2026</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:#2e7d32"></div>
+            <div><div class="tl-text">David Martinez nominated for promotion — Engineering</div><div class="tl-meta">HR Manager · May 9, 2026</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="box">
+            <div class="box-header">
+              <div class="box-title">Quick Actions</div>
+            </div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <div class="qa-icon" style="background:#e3f2fd;color:#1565c0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div><div class="qa-text">Add Employee</div><div class="qa-sub">Onboard new hire</div></div>
+              </div>
+              <div class="qa-card">
+                <div class="qa-icon" style="background:#e8f5e9;color:#2e7d32">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+                </div>
+                <div><div class="qa-text">Run Payroll</div><div class="qa-sub">Process May 2026</div></div>
+              </div>
+              <div class="qa-card">
+                <div class="qa-icon" style="background:#fff8e1;color:#b36a00">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                </div>
+                <div><div class="qa-text">Approve Leaves</div><div class="qa-sub">12 pending</div></div>
+              </div>
+              <div class="qa-card">
+                <div class="qa-icon" style="background:#f3e5f5;color:#6a1b9a">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                </div>
+                <div><div class="qa-text">Export Report</div><div class="qa-sub">Download summary</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance mini -->
+          <div class="box">
+            <div class="box-header">
+              <div class="box-title">Performance Snapshot</div>
+              <span class="box-action">Full View</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+              <div style="text-align:center">
+                <div style="font-size:32px;font-weight:700;color:#1a1a1a;line-height:1">3.8</div>
+                <div style="font-size:11px;color:#888;margin-top:3px">Org Avg.</div>
+                <div style="color:#ffa000;font-size:14px;margin-top:4px">★★★★☆</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                  <span style="color:#555;width:80px">Completed</span>
+                  <div style="flex:1;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:64%;height:100%;background:#2e7d32;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:24px;text-align:right">9</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                  <span style="color:#555;width:80px">In Progress</span>
+                  <div style="flex:1;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:36%;height:100%;background:#1976d2;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:24px;text-align:right">5</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+                  <span style="color:#555;width:80px">PIPs Active</span>
+                  <div style="flex:1;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden"><div style="width:21%;height:100%;background:#ef5350;border-radius:3px"></div></div>
+                  <span style="font-weight:700;width:24px;text-align:right">3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

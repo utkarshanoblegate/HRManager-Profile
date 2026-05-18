@@ -1,0 +1,631 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-left:auto;background:#e53935;color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.notif-badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-av{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.content{flex:1;padding:32px 40px;overflow-y:auto}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px}
+.page-title{font-size:30px;font-weight:700}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px}
+.btn{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:10px;padding:18px 20px;border:1px solid #e8e8e8;cursor:pointer;transition:box-shadow .15s}
+.stat-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.stat-lbl{font-size:12px;color:#888;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.stat-num{font-size:26px;font-weight:700;line-height:1}
+.stat-foot{font-size:12px;margin-top:5px}
+.trend-up{color:#2e7d32;font-weight:600}
+.trend-nt{color:#888}
+
+/* Dept cards */
+.dept-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.dept-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
+.dept-card:hover{border-color:#1976d2;box-shadow:0 2px 10px rgba(25,118,210,.08)}
+.dept-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dept-name{font-size:14px;font-weight:700;color:#1a1a1a}
+.dept-count{font-size:12px;color:#888;margin-top:2px}
+.dept-bar{height:4px;background:#f0f0f0;border-radius:2px;margin-top:8px;overflow:hidden}
+.dept-fill{height:100%;border-radius:2px}
+
+/* Tabs + filters */
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:18px}
+.tab{padding:11px 20px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .13s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.filters{display:flex;gap:10px;margin-bottom:18px;align-items:center;flex-wrap:wrap}
+.search-box{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:44px}
+.search-box input{border:none;outline:none;font-size:13px;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.fsel{height:44px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none;cursor:pointer}
+.view-btns{display:flex;gap:4px}
+.vbtn{width:38px;height:38px;border-radius:7px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:15px;transition:all .13s}
+.vbtn.active{background:#e3f2fd;border-color:#1976d2;color:#1565c0}
+
+/* Card grid */
+.emp-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.emp-card{background:#fff;border-radius:12px;border:1px solid #e8e8e8;padding:20px 18px;cursor:pointer;transition:all .15s;position:relative}
+.emp-card:hover{border-color:#1976d2;box-shadow:0 4px 18px rgba(25,118,210,.1);transform:translateY(-2px)}
+.emp-card-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;margin:0 auto 12px}
+.emp-card-name{font-size:14px;font-weight:700;text-align:center;color:#1a1a1a}
+.emp-card-role{font-size:12px;color:#888;text-align:center;margin-top:3px}
+.emp-card-dept{display:flex;justify-content:center;margin-top:8px}
+.emp-card-divider{border-top:1px solid #f0f0f0;margin:12px 0}
+.emp-card-meta{display:flex;justify-content:space-between;font-size:11px;color:#888}
+.emp-card-stat{text-align:center}
+.emp-card-stat-val{font-size:14px;font-weight:700;color:#1a1a1a}
+.emp-card-stat-lbl{font-size:10px;color:#aaa;margin-top:1px}
+.emp-card-actions{display:flex;gap:6px;margin-top:12px;justify-content:center}
+.ca-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .13s}
+.ca-view{background:#e3f2fd;color:#1565c0}
+.ca-view:hover{background:#bbdefb}
+.ca-edit{background:#f5f5f5;color:#555}
+.ca-edit:hover{background:#e0e0e0}
+.status-dot{position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%}
+
+/* chip */
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-eng{background:#e3f2fd;color:#1565c0}
+.chip-sales{background:#fff8e1;color:#b36a00}
+.chip-mkt{background:#fce4ec;color:#880e4f}
+.chip-ops{background:#e0f7fa;color:#00838f}
+.chip-active{background:#e8f5e9;color:#2e7d32}
+.chip-leave{background:#fff8e1;color:#b36a00}
+.chip-probation{background:#f3e5f5;color:#6a1b9a}
+.chip-notice{background:#ffebee;color:#c62828}
+
+/* table */
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:#f8f9fa}
+th{padding:13px 14px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:13px 14px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.emp-cell{display:flex;align-items:center;gap:10px}
+.emp-av-sm{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.emp-name-cell{font-weight:600;font-size:13px}
+.emp-id{font-size:11px;color:#888}
+.rating-stars{color:#ffa000;font-size:12px;letter-spacing:1px}
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:none;transition:all .15s}
+.act-v{background:#e3f2fd;color:#1565c0}
+.act-v:hover{background:#bbdefb}
+.act-e{background:#f5f5f5;color:#555}
+.act-e:hover{background:#e0e0e0}
+.act-d{background:#ffebee;color:#c62828}
+.act-d:hover{background:#ffcdd2}
+.act-row{display:flex;gap:5px}
+.pg-footer{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.pg-btns{display:flex;gap:4px}
+.pgb{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555;background:#fff}
+.pgb.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+
+/* profile drawer hint */
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Employees</div>
+      <div class="topbar-right">
+        <button class="badge-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="notif-badge">7</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div><div style="font-size:13px;font-weight:600">HR Manager</div><div style="font-size:11px;color:#888">Admin</div></div>
+          <div class="user-av">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Employees</div>
+          <div class="page-sub">Manage workforce across all departments — 14 active employees</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            Export
+          </button>
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+            Import CSV
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Employee
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">Total Employees<div class="stat-icon" style="background:#e3f2fd;color:#1565c0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div></div>
+          <div class="stat-num">14</div>
+          <div class="stat-foot trend-up">+3 hired this FY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Active<div class="stat-icon" style="background:#e8f5e9;color:#2e7d32">✓</div></div>
+          <div class="stat-num" style="color:#2e7d32">11</div>
+          <div class="stat-foot trend-nt">Present today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">On Leave<div class="stat-icon" style="background:#fff8e1;color:#b36a00">📅</div></div>
+          <div class="stat-num" style="color:#e65100">3</div>
+          <div class="stat-foot trend-nt">Approved leave today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">On Probation<div class="stat-icon" style="background:#f3e5f5;color:#6a1b9a">⏳</div></div>
+          <div class="stat-num" style="color:#6a1b9a">2</div>
+          <div class="stat-foot trend-nt">Completing this quarter</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Avg. Tenure<div class="stat-icon" style="background:#fce4ec;color:#880e4f">🏅</div></div>
+          <div class="stat-num">2.4<span style="font-size:15px;font-weight:400;color:#888"> yrs</span></div>
+          <div class="stat-foot trend-up">+0.3 vs last yr</div>
+        </div>
+      </div>
+
+      <!-- Department Overview -->
+      <div class="section-row">
+        <div class="section-title">Departments</div>
+        <span style="font-size:12px;color:#1976d2;cursor:pointer;font-weight:600">Manage Departments</span>
+      </div>
+      <div class="dept-row">
+        <div class="dept-card">
+          <div class="dept-icon" style="background:#e3f2fd;color:#1565c0">💻</div>
+          <div style="flex:1">
+            <div class="dept-name">Engineering</div>
+            <div class="dept-count">5 employees &nbsp;·&nbsp; Avg ₹15.8L CTC</div>
+            <div class="dept-bar"><div class="dept-fill" style="width:36%;background:#1976d2"></div></div>
+          </div>
+          <div style="font-size:18px;font-weight:700;color:#1976d2">5</div>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="background:#fff8e1;color:#b36a00">📈</div>
+          <div style="flex:1">
+            <div class="dept-name">Sales</div>
+            <div class="dept-count">4 employees &nbsp;·&nbsp; Avg ₹13.2L CTC</div>
+            <div class="dept-bar"><div class="dept-fill" style="width:29%;background:#f9a825"></div></div>
+          </div>
+          <div style="font-size:18px;font-weight:700;color:#b36a00">4</div>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="background:#fce4ec;color:#880e4f">📣</div>
+          <div style="flex:1">
+            <div class="dept-name">Marketing</div>
+            <div class="dept-count">3 employees &nbsp;·&nbsp; Avg ₹12.4L CTC</div>
+            <div class="dept-bar"><div class="dept-fill" style="width:21%;background:#e91e63"></div></div>
+          </div>
+          <div style="font-size:18px;font-weight:700;color:#e91e63">3</div>
+        </div>
+        <div class="dept-card">
+          <div class="dept-icon" style="background:#e0f7fa;color:#00838f">⚙️</div>
+          <div style="flex:1">
+            <div class="dept-name">Operations</div>
+            <div class="dept-count">2 employees &nbsp;·&nbsp; Avg ₹14.5L CTC</div>
+            <div class="dept-bar"><div class="dept-fill" style="width:14%;background:#26c6da"></div></div>
+          </div>
+          <div style="font-size:18px;font-weight:700;color:#00838f">2</div>
+        </div>
+      </div>
+
+      <!-- Tabs + Filters -->
+      <div class="tabs">
+        <div class="tab active">All Employees (14)</div>
+        <div class="tab">Active (11)</div>
+        <div class="tab">On Leave (3)</div>
+        <div class="tab">Probation (2)</div>
+        <div class="tab">On Notice (1)</div>
+        <div class="tab">Recently Joined</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search name, ID, role, email…" />
+        </div>
+        <select class="fsel">
+          <option>All Departments</option>
+          <option>Engineering</option>
+          <option>Sales</option>
+          <option>Marketing</option>
+          <option>Operations</option>
+        </select>
+        <select class="fsel">
+          <option>All Status</option>
+          <option>Active</option>
+          <option>On Leave</option>
+          <option>Probation</option>
+          <option>On Notice</option>
+        </select>
+        <select class="fsel">
+          <option>All Types</option>
+          <option>Full-time</option>
+          <option>Contract</option>
+          <option>Intern</option>
+        </select>
+        <select class="fsel">
+          <option>Sort: Name A–Z</option>
+          <option>Sort: Newest First</option>
+          <option>Sort: CTC High–Low</option>
+          <option>Sort: Rating High–Low</option>
+        </select>
+        <div class="view-btns">
+          <button class="vbtn active" title="Card view">⊞</button>
+          <button class="vbtn" title="List view">☰</button>
+        </div>
+      </div>
+
+      <!-- Employee Cards -->
+      <div class="section-row">
+        <div class="section-title">All Employees</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Bulk Action</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Send Announcement</button>
+        </div>
+      </div>
+
+      <div class="emp-card-grid">
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#4caf50"></div>
+          <div class="emp-card-av" style="background:#e3f2fd;color:#1565c0">SJ</div>
+          <div class="emp-card-name">Sarah Johnson</div>
+          <div class="emp-card-role">Senior Developer</div>
+          <div class="emp-card-dept"><span class="chip chip-eng">Engineering</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.9</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹18.5L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">3.2y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#ff9800"></div>
+          <div class="emp-card-av" style="background:#f3e5f5;color:#6a1b9a">JD</div>
+          <div class="emp-card-name">John Doe</div>
+          <div class="emp-card-role">Sales Executive</div>
+          <div class="emp-card-dept"><span class="chip chip-sales">Sales</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">3.6</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹14.2L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">1.8y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#4caf50"></div>
+          <div class="emp-card-av" style="background:#e0f7fa;color:#00838f">EC</div>
+          <div class="emp-card-name">Emily Chen</div>
+          <div class="emp-card-role">Marketing Lead</div>
+          <div class="emp-card-dept"><span class="chip chip-mkt">Marketing</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.2</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹13.0L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">2.1y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#4caf50"></div>
+          <div class="emp-card-av" style="background:#fff8e1;color:#b36a00">MB</div>
+          <div class="emp-card-name">Michael Brown</div>
+          <div class="emp-card-role">Product Designer</div>
+          <div class="emp-card-dept"><span class="chip chip-eng">Engineering</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.0</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹16.0L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">2.7y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#4caf50"></div>
+          <div class="emp-card-av" style="background:#e0f7fa;color:#00838f">JW</div>
+          <div class="emp-card-name">Jessica Williams</div>
+          <div class="emp-card-role">Operations Manager</div>
+          <div class="emp-card-dept"><span class="chip chip-ops">Operations</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.7</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹15.5L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.0y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#4caf50"></div>
+          <div class="emp-card-av" style="background:#e8f5e9;color:#2e7d32">DM</div>
+          <div class="emp-card-name">David Martinez</div>
+          <div class="emp-card-role">Backend Developer</div>
+          <div class="emp-card-dept"><span class="chip chip-eng">Engineering</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">4.5</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹14.8L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">1.5y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#ff9800"></div>
+          <div class="emp-card-av" style="background:#fce4ec;color:#880e4f">LA</div>
+          <div class="emp-card-name">Lisa Anderson</div>
+          <div class="emp-card-role">Sales Manager</div>
+          <div class="emp-card-dept"><span class="chip chip-sales">Sales</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val">3.4</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹12.5L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">2.3y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="emp-card">
+          <div class="status-dot" style="background:#ef5350"></div>
+          <div class="emp-card-av" style="background:#ffebee;color:#c62828">DW</div>
+          <div class="emp-card-name">Daniel Wilson</div>
+          <div class="emp-card-role">Sales Executive</div>
+          <div class="emp-card-dept"><span class="chip chip-sales">Sales</span></div>
+          <div class="emp-card-divider"></div>
+          <div class="emp-card-meta">
+            <div class="emp-card-stat"><div class="emp-card-stat-val" style="color:#c62828">2.1</div><div class="emp-card-stat-lbl">Rating</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">₹13.5L</div><div class="emp-card-stat-lbl">CTC</div></div>
+            <div class="emp-card-stat"><div class="emp-card-stat-val">0.8y</div><div class="emp-card-stat-lbl">Tenure</div></div>
+          </div>
+          <div class="emp-card-actions">
+            <button class="ca-btn ca-view">View Profile</button>
+            <button class="ca-btn ca-edit">Edit</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- List View Table -->
+      <div class="section-row">
+        <div class="section-title">Employee Directory</div>
+        <span style="font-size:12px;color:#888">Showing 8 of 14 — <span style="color:#1976d2;cursor:pointer;font-weight:600">View All</span></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:38px"><input type="checkbox" style="cursor:pointer"/></th>
+              <th style="width:200px">Employee</th>
+              <th style="width:130px">Role</th>
+              <th style="width:110px">Department</th>
+              <th style="width:100px">Join Date</th>
+              <th style="width:90px">CTC</th>
+              <th style="width:80px">Rating</th>
+              <th style="width:90px">Status</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e3f2fd;color:#1565c0">SJ</div><div><div class="emp-name-cell">Sarah Johnson</div><div class="emp-id">EMP001</div></div></div></td>
+              <td style="color:#555">Senior Developer</td>
+              <td><span class="chip chip-eng">Engineering</span></td>
+              <td style="color:#888">Mar 15, 2023</td>
+              <td style="font-weight:700">₹18.5L</td>
+              <td><span style="color:#2e7d32;font-weight:700">4.9</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-active">Active</span></td>
+              <td><div class="act-row"><button class="act-btn act-v" title="View">👁</button><button class="act-btn act-e" title="Edit">✏️</button><button class="act-btn act-d" title="Archive">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#f3e5f5;color:#6a1b9a">JD</div><div><div class="emp-name-cell">John Doe</div><div class="emp-id">EMP002</div></div></div></td>
+              <td style="color:#555">Sales Executive</td>
+              <td><span class="chip chip-sales">Sales</span></td>
+              <td style="color:#888">Aug 20, 2024</td>
+              <td style="font-weight:700">₹14.2L</td>
+              <td><span style="color:#b36a00;font-weight:700">3.6</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-leave">On Leave</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e0f7fa;color:#00838f">EC</div><div><div class="emp-name-cell">Emily Chen</div><div class="emp-id">EMP003</div></div></div></td>
+              <td style="color:#555">Marketing Lead</td>
+              <td><span class="chip chip-mkt">Marketing</span></td>
+              <td style="color:#888">Apr 10, 2024</td>
+              <td style="font-weight:700">₹13.0L</td>
+              <td><span style="color:#1976d2;font-weight:700">4.2</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-active">Active</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#fff8e1;color:#b36a00">MB</div><div><div class="emp-name-cell">Michael Brown</div><div class="emp-id">EMP004</div></div></div></td>
+              <td style="color:#555">Product Designer</td>
+              <td><span class="chip chip-eng">Engineering</span></td>
+              <td style="color:#888">Jun 5, 2023</td>
+              <td style="font-weight:700">₹16.0L</td>
+              <td><span style="color:#1976d2;font-weight:700">4.0</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-active">Active</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e0f7fa;color:#00838f">JW</div><div><div class="emp-name-cell">Jessica Williams</div><div class="emp-id">EMP005</div></div></div></td>
+              <td style="color:#555">Operations Manager</td>
+              <td><span class="chip chip-ops">Operations</span></td>
+              <td style="color:#888">May 12, 2022</td>
+              <td style="font-weight:700">₹15.5L</td>
+              <td><span style="color:#2e7d32;font-weight:700">4.7</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-active">Active</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#e8f5e9;color:#2e7d32">DM</div><div><div class="emp-name-cell">David Martinez</div><div class="emp-id">EMP006</div></div></div></td>
+              <td style="color:#555">Backend Developer</td>
+              <td><span class="chip chip-eng">Engineering</span></td>
+              <td style="color:#888">Nov 1, 2024</td>
+              <td style="font-weight:700">₹14.8L</td>
+              <td><span style="color:#2e7d32;font-weight:700">4.5</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-probation">Probation</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#fce4ec;color:#880e4f">LA</div><div><div class="emp-name-cell">Lisa Anderson</div><div class="emp-id">EMP007</div></div></div></td>
+              <td style="color:#555">Sales Manager</td>
+              <td><span class="chip chip-sales">Sales</span></td>
+              <td style="color:#888">Feb 14, 2023</td>
+              <td style="font-weight:700">₹12.5L</td>
+              <td><span style="color:#b36a00;font-weight:700">3.4</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-leave">On Leave</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="emp-cell"><div class="emp-av-sm" style="background:#ffebee;color:#c62828">DW</div><div><div class="emp-name-cell">Daniel Wilson</div><div class="emp-id">EMP010</div></div></div></td>
+              <td style="color:#555">Sales Executive</td>
+              <td><span class="chip chip-sales">Sales</span></td>
+              <td style="color:#888">Sep 8, 2025</td>
+              <td style="font-weight:700">₹13.5L</td>
+              <td><span style="color:#c62828;font-weight:700">2.1</span> <span style="color:#ffa000;font-size:11px">★</span></td>
+              <td><span class="chip chip-notice">On Notice</span></td>
+              <td><div class="act-row"><button class="act-btn act-v">👁</button><button class="act-btn act-e">✏️</button><button class="act-btn act-d">🗑</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pg-footer">
+          <span>Showing 1–8 of 14 employees</span>
+          <div class="pg-btns">
+            <div class="pgb cur">1</div>
+            <div class="pgb">2</div>
+            <div class="pgb" style="width:auto;padding:0 10px">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

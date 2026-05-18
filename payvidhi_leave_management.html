@@ -1,0 +1,500 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;height:100vh;min-height:700px}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:linear-gradient(135deg,#1976d2,#1565c0);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700;color:#1a1a1a;line-height:1.1}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:all .15s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 24px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700;color:#1a1a1a}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.badge-btn:hover{background:#f5f5f5}
+.badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-avatar{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.user-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.user-role{font-size:11px;color:#888}
+.content{flex:1;overflow-y:auto;padding:32px 40px}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px}
+.page-title{font-size:30px;font-weight:700;color:#1a1a1a}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px}
+.btn{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+.btn-icon{font-size:16px}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:#fff;border-radius:10px;padding:20px 22px;border:1px solid #e8e8e8}
+.stat-label{font-size:12px;color:#888;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.stat-num{font-size:32px;font-weight:700;color:#1a1a1a;line-height:1}
+.stat-footer{font-size:12px;color:#888;margin-top:6px}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.quick-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:20px;cursor:pointer;transition:all .15s}
+.quick-card:hover{border-color:#1976d2;box-shadow:0 2px 12px rgba(25,118,210,.1)}
+.quick-icon{width:36px;height:36px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.quick-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.quick-sub{font-size:12px;color:#888;margin-top:2px}
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700;color:#1a1a1a}
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:20px}
+.tab{padding:12px 18px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.tab:hover:not(.active){color:#333}
+.filters{display:flex;gap:10px;margin-bottom:16px;align-items:center}
+.search-box{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:44px}
+.search-box input{border:none;outline:none;font-size:14px;color:#1a1a1a;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.filter-select{height:44px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none;cursor:pointer}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8f9fa}
+th{padding:14px 16px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:16px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.emp-cell{display:flex;align-items:center;gap:10px}
+.emp-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.emp-name{font-weight:600;font-size:13px;color:#1a1a1a}
+.emp-dept{font-size:11px;color:#888}
+.chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-pending{background:#fff8e1;color:#b36a00}
+.chip-approved{background:#e8f5e9;color:#2e7d32}
+.chip-rejected{background:#ffebee;color:#c62828}
+.chip-leave{background:#e3f2fd;color:#1565c0}
+.chip-sick{background:#f3e5f5;color:#6a1b9a}
+.chip-casual{background:#e8f5e9;color:#2e7d32}
+.chip-medical{background:#fff3e0;color:#e65100}
+.chip-work{background:#e0f7fa;color:#00838f}
+.action-btns{display:flex;gap:6px}
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;border:none;transition:all .15s}
+.act-approve{background:#e8f5e9;color:#2e7d32}
+.act-approve:hover{background:#c8e6c9}
+.act-reject{background:#ffebee;color:#c62828}
+.act-reject:hover{background:#ffcdd2}
+.act-view{background:#e3f2fd;color:#1565c0}
+.act-view:hover{background:#bbdefb}
+.page-footer{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.footer-pages{display:flex;gap:4px}
+.fp{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555}
+.fp.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+.summary-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.calendar-card{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-month{font-size:15px;font-weight:700;color:#1a1a1a}
+.cal-nav{width:28px;height:28px;border-radius:6px;background:#f5f5f5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-day-lbl{font-size:11px;color:#aaa;font-weight:600;padding:4px 0}
+.cal-day{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:12px;cursor:pointer;color:#555}
+.cal-day:hover{background:#f0f0f0}
+.cal-day.today{background:#1976d2;color:#fff;font-weight:700}
+.cal-day.leave{background:#fff8e1;color:#b36a00}
+.cal-day.approved{background:#e8f5e9;color:#2e7d32}
+.cal-day.other{color:#ccc}
+.pending-card{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.pending-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f5f5f5}
+.pending-item:last-child{border-bottom:none}
+.pend-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.pend-info{flex:1}
+.pend-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.pend-detail{font-size:11px;color:#888;margin-top:2px}
+.pend-days{font-size:12px;font-weight:600;color:#1976d2;white-space:nowrap}
+.pend-actions{display:flex;gap:4px}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+   <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Leave Management</div>
+      <div class="topbar-right">
+        <button class="badge-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge">7</span>
+        </button>
+        <div class="user-info">
+          <div>
+            <div class="user-name">HR Manager</div>
+            <div class="user-role">Admin</div>
+          </div>
+          <div class="user-avatar">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Leave Management</div>
+          <div class="page-sub">Manage & approve employee leave requests — 14 employees across departments</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            Export
+          </button>
+          <button class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Apply Leave
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">
+            Total Requests
+            <div class="stat-icon" style="background:#e3f2fd;color:#1565c0">📋</div>
+          </div>
+          <div class="stat-num">42</div>
+          <div class="stat-footer">This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            Pending Approval
+            <div class="stat-icon" style="background:#fff8e1;color:#b36a00">⏳</div>
+          </div>
+          <div class="stat-num" style="color:#e65100">12</div>
+          <div class="stat-footer">Awaiting review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            Approved
+            <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32">✓</div>
+          </div>
+          <div class="stat-num" style="color:#2e7d32">24</div>
+          <div class="stat-footer">This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            On Leave Today
+            <div class="stat-icon" style="background:#f3e5f5;color:#6a1b9a">📅</div>
+          </div>
+          <div class="stat-num">3</div>
+          <div class="stat-footer">Active today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">
+            Rejected
+            <div class="stat-icon" style="background:#ffebee;color:#c62828">✗</div>
+          </div>
+          <div class="stat-num" style="color:#c62828">6</div>
+          <div class="stat-footer">This month</div>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <div class="calendar-card">
+          <div class="cal-header">
+            <button class="cal-nav">‹</button>
+            <div class="cal-month">May 2026</div>
+            <button class="cal-nav">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-lbl">Su</div><div class="cal-day-lbl">Mo</div><div class="cal-day-lbl">Tu</div><div class="cal-day-lbl">We</div><div class="cal-day-lbl">Th</div><div class="cal-day-lbl">Fr</div><div class="cal-day-lbl">Sa</div>
+            <div class="cal-day other">27</div><div class="cal-day other">28</div><div class="cal-day other">29</div><div class="cal-day other">30</div><div class="cal-day other">1</div><div class="cal-day approved">2</div><div class="cal-day">3</div>
+            <div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day leave">6</div><div class="cal-day leave">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div>
+            <div class="cal-day approved">11</div><div class="cal-day today">12</div><div class="cal-day">13</div><div class="cal-day leave">14</div><div class="cal-day leave">15</div><div class="cal-day leave">16</div><div class="cal-day">17</div>
+            <div class="cal-day">18</div><div class="cal-day approved">19</div><div class="cal-day approved">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div>
+            <div class="cal-day leave">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day approved">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:14px;font-size:11px;color:#888;flex-wrap:wrap">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#e8f5e9;margin-right:4px;vertical-align:middle"></span>Approved</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#fff8e1;margin-right:4px;vertical-align:middle"></span>Pending</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#1976d2;margin-right:4px;vertical-align:middle"></span>Today</span>
+          </div>
+        </div>
+
+        <div class="pending-card">
+          <div class="section-row" style="margin-bottom:12px">
+            <div class="section-title">Pending Approvals</div>
+            <span class="chip chip-pending">12 items</span>
+          </div>
+          <div class="pending-item">
+            <div class="pend-avatar" style="background:#e3f2fd;color:#1565c0">SJ</div>
+            <div class="pend-info">
+              <div class="pend-name">Sarah Johnson</div>
+              <div class="pend-detail"><span class="chip chip-leave" style="font-size:10px;padding:2px 7px">Annual</span> · May 14–16</div>
+            </div>
+            <div class="pend-days">3 days</div>
+            <div class="pend-actions">
+              <button class="act-btn act-approve">✓</button>
+              <button class="act-btn act-reject">✗</button>
+            </div>
+          </div>
+          <div class="pending-item">
+            <div class="pend-avatar" style="background:#f3e5f5;color:#6a1b9a">JD</div>
+            <div class="pend-info">
+              <div class="pend-name">John Doe</div>
+              <div class="pend-detail"><span class="chip chip-sick" style="font-size:10px;padding:2px 7px">Sick</span> · May 13</div>
+            </div>
+            <div class="pend-days">1 day</div>
+            <div class="pend-actions">
+              <button class="act-btn act-approve">✓</button>
+              <button class="act-btn act-reject">✗</button>
+            </div>
+          </div>
+          <div class="pending-item">
+            <div class="pend-avatar" style="background:#e8f5e9;color:#2e7d32">EC</div>
+            <div class="pend-info">
+              <div class="pend-name">Emily Chen</div>
+              <div class="pend-detail"><span class="chip chip-casual" style="font-size:10px;padding:2px 7px">Casual</span> · May 20–21</div>
+            </div>
+            <div class="pend-days">2 days</div>
+            <div class="pend-actions">
+              <button class="act-btn act-approve">✓</button>
+              <button class="act-btn act-reject">✗</button>
+            </div>
+          </div>
+          <div class="pending-item">
+            <div class="pend-avatar" style="background:#fff8e1;color:#b36a00">MB</div>
+            <div class="pend-info">
+              <div class="pend-name">Michael Brown</div>
+              <div class="pend-detail"><span class="chip chip-medical" style="font-size:10px;padding:2px 7px">Medical</span> · May 25–26</div>
+            </div>
+            <div class="pend-days">2 days</div>
+            <div class="pend-actions">
+              <button class="act-btn act-approve">✓</button>
+              <button class="act-btn act-reject">✗</button>
+            </div>
+          </div>
+          <div class="pending-item">
+            <div class="pend-avatar" style="background:#e0f7fa;color:#00838f">JW</div>
+            <div class="pend-info">
+              <div class="pend-name">Jessica Williams</div>
+              <div class="pend-detail"><span class="chip chip-work" style="font-size:10px;padding:2px 7px">WFH</span> · May 14–15</div>
+            </div>
+            <div class="pend-days">2 days</div>
+            <div class="pend-actions">
+              <button class="act-btn act-approve">✓</button>
+              <button class="act-btn act-reject">✗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <div class="section-title">All Leave Requests</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:13px">Bulk Approve</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:13px">Download Report</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All Requests (42)</div>
+        <div class="tab">Pending (12)</div>
+        <div class="tab">Approved (24)</div>
+        <div class="tab">Rejected (6)</div>
+        <div class="tab">On Leave Today (3)</div>
+        <div class="tab">Leave Balance</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search name, ID, leave type..." />
+        </div>
+        <select class="filter-select">
+          <option>All Departments</option>
+          <option>Engineering</option>
+          <option>Sales</option>
+          <option>Marketing</option>
+          <option>Operations</option>
+        </select>
+        <select class="filter-select">
+          <option>All Leave Types</option>
+          <option>Annual Leave</option>
+          <option>Sick Leave</option>
+          <option>Casual Leave</option>
+          <option>Medical Leave</option>
+          <option>Work from Home</option>
+        </select>
+        <select class="filter-select">
+          <option>May 2026</option>
+          <option>April 2026</option>
+          <option>March 2026</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Leave Type</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Days</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#e3f2fd;color:#1565c0">SJ</div><div><div class="emp-name">Sarah Johnson</div><div class="emp-dept">Engineering</div></div></div></td>
+              <td><span class="chip chip-leave">Annual Leave</span></td>
+              <td>May 14, 2026</td>
+              <td>May 16, 2026</td>
+              <td style="font-weight:600">3</td>
+              <td style="color:#888;max-width:140px">Family function</td>
+              <td><span class="chip chip-pending">Pending</span></td>
+              <td><div class="action-btns"><button class="act-btn act-approve" title="Approve">✓</button><button class="act-btn act-reject" title="Reject">✗</button><button class="act-btn act-view" title="View">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#f3e5f5;color:#6a1b9a">JD</div><div><div class="emp-name">John Doe</div><div class="emp-dept">Sales</div></div></div></td>
+              <td><span class="chip chip-sick">Sick Leave</span></td>
+              <td>May 13, 2026</td>
+              <td>May 13, 2026</td>
+              <td style="font-weight:600">1</td>
+              <td style="color:#888;max-width:140px">Fever</td>
+              <td><span class="chip chip-pending">Pending</span></td>
+              <td><div class="action-btns"><button class="act-btn act-approve">✓</button><button class="act-btn act-reject">✗</button><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#e8f5e9;color:#2e7d32">EC</div><div><div class="emp-name">Emily Chen</div><div class="emp-dept">Marketing</div></div></div></td>
+              <td><span class="chip chip-casual">Casual Leave</span></td>
+              <td>May 20, 2026</td>
+              <td>May 21, 2026</td>
+              <td style="font-weight:600">2</td>
+              <td style="color:#888;max-width:140px">Personal work</td>
+              <td><span class="chip chip-pending">Pending</span></td>
+              <td><div class="action-btns"><button class="act-btn act-approve">✓</button><button class="act-btn act-reject">✗</button><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#e8f5e9;color:#2e7d32">DM</div><div><div class="emp-name">David Martinez</div><div class="emp-dept">Engineering</div></div></div></td>
+              <td><span class="chip chip-leave">Annual Leave</span></td>
+              <td>May 2, 2026</td>
+              <td>May 5, 2026</td>
+              <td style="font-weight:600">4</td>
+              <td style="color:#888;max-width:140px">Vacation</td>
+              <td><span class="chip chip-approved">Approved</span></td>
+              <td><div class="action-btns"><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#e0f7fa;color:#00838f">JW</div><div><div class="emp-name">Jessica Williams</div><div class="emp-dept">Operations</div></div></div></td>
+              <td><span class="chip chip-work">Work from Home</span></td>
+              <td>May 14, 2026</td>
+              <td>May 15, 2026</td>
+              <td style="font-weight:600">2</td>
+              <td style="color:#888;max-width:140px">WFH request</td>
+              <td><span class="chip chip-pending">Pending</span></td>
+              <td><div class="action-btns"><button class="act-btn act-approve">✓</button><button class="act-btn act-reject">✗</button><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#fff8e1;color:#b36a00">MB</div><div><div class="emp-name">Michael Brown</div><div class="emp-dept">Engineering</div></div></div></td>
+              <td><span class="chip chip-medical">Medical Leave</span></td>
+              <td>May 25, 2026</td>
+              <td>May 26, 2026</td>
+              <td style="font-weight:600">2</td>
+              <td style="color:#888;max-width:140px">Surgery follow-up</td>
+              <td><span class="chip chip-pending">Pending</span></td>
+              <td><div class="action-btns"><button class="act-btn act-approve">✓</button><button class="act-btn act-reject">✗</button><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#fce4ec;color:#880e4f">LA</div><div><div class="emp-name">Lisa Anderson</div><div class="emp-dept">Sales</div></div></div></td>
+              <td><span class="chip chip-sick">Sick Leave</span></td>
+              <td>Apr 28, 2026</td>
+              <td>Apr 30, 2026</td>
+              <td style="font-weight:600">3</td>
+              <td style="color:#888;max-width:140px">Flu symptoms</td>
+              <td><span class="chip chip-approved">Approved</span></td>
+              <td><div class="action-btns"><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="emp-cell"><div class="emp-avatar" style="background:#ffebee;color:#c62828">AG</div><div><div class="emp-name">Amanda Garcia</div><div class="emp-dept">Marketing</div></div></div></td>
+              <td><span class="chip chip-casual">Casual Leave</span></td>
+              <td>Apr 22, 2026</td>
+              <td>Apr 22, 2026</td>
+              <td style="font-weight:600">1</td>
+              <td style="color:#888;max-width:140px">Personal</td>
+              <td><span class="chip chip-rejected">Rejected</span></td>
+              <td><div class="action-btns"><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="page-footer">
+          <span>Showing 1–8 of 42 requests</span>
+          <div class="footer-pages">
+            <div class="fp cur">1</div>
+            <div class="fp">2</div>
+            <div class="fp">3</div>
+            <span style="padding:0 4px;line-height:28px">...</span>
+            <div class="fp">6</div>
+            <div class="fp" style="padding:0 10px;width:auto">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

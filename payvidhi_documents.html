@@ -1,0 +1,688 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-avatar{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.content{flex:1;padding:32px 40px;overflow-y:auto}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:30px;font-weight:700}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px}
+.btn{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+
+/* Upload zone */
+.upload-zone{border:2px dashed #c5d8f5;border-radius:12px;background:#f0f7ff;padding:28px;text-align:center;margin-bottom:24px;cursor:pointer;transition:all .15s}
+.upload-zone:hover{border-color:#1976d2;background:#e3f2fd}
+.upload-icon{width:48px;height:48px;background:#e3f2fd;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.upload-title{font-size:15px;font-weight:700;color:#1a1a1a}
+.upload-sub{font-size:12px;color:#888;margin-top:4px}
+.upload-types{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.utype{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#fff;border:1px solid #e0e0e0;color:#555}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+.stat-card{background:#fff;border-radius:10px;padding:18px 20px;border:1px solid #e8e8e8}
+.stat-lbl{font-size:12px;color:#888;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.stat-num{font-size:26px;font-weight:700;line-height:1}
+.stat-foot{font-size:12px;color:#888;margin-top:5px}
+
+/* Folder grid */
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700}
+.folder-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px}
+.folder-card{background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:16px 14px;cursor:pointer;transition:all .15s;text-align:center}
+.folder-card:hover{border-color:#1976d2;box-shadow:0 2px 10px rgba(25,118,210,.08);transform:translateY(-1px)}
+.folder-icon{font-size:32px;margin-bottom:8px;display:block}
+.folder-name{font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.folder-count{font-size:11px;color:#888;margin-top:3px}
+.folder-card.add{border-style:dashed;border-color:#ccc;background:#fafafa}
+.folder-card.add:hover{border-color:#1976d2}
+.folder-card.add .folder-name{color:#aaa}
+
+/* Two col */
+.two-col{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:26px}
+.box{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.box-title{font-size:15px;font-weight:700}
+.box-action{font-size:12px;color:#1976d2;cursor:pointer;font-weight:600}
+
+/* Recent activity */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.activity-item:last-child{border-bottom:none}
+.act-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.act-text{font-size:13px;font-weight:600;color:#1a1a1a}
+.act-meta{font-size:11px;color:#888;margin-top:2px}
+.act-chip{margin-left:auto;white-space:nowrap;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0}
+
+/* Expiry */
+.expiry-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.expiry-item:last-child{border-bottom:none}
+.exp-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.exp-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.exp-who{font-size:11px;color:#888;margin-top:1px}
+.exp-tag{margin-left:auto;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tag-red{background:#ffebee;color:#c62828}
+.tag-amber{background:#fff8e1;color:#b36a00}
+.tag-green{background:#e8f5e9;color:#2e7d32}
+
+/* Table */
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:18px}
+.tab{padding:11px 18px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .13s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:42px}
+.search-box input{border:none;outline:none;font-size:13px;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.fsel{height:42px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none}
+.view-btns{display:flex;gap:4px}
+.vbtn{width:36px;height:36px;border-radius:6px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;font-size:14px}
+.vbtn.active{background:#e3f2fd;border-color:#1976d2;color:#1565c0}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:#f8f9fa}
+th{padding:13px 14px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:12px 14px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.file-cell{display:flex;align-items:center;gap:10px}
+.file-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;font-family:monospace}
+.fname{font-weight:600;font-size:13px;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-hr{background:#e3f2fd;color:#1565c0}
+.chip-pay{background:#e8f5e9;color:#2e7d32}
+.chip-comp{background:#e0f7fa;color:#00838f}
+.chip-pol{background:#f3e5f5;color:#6a1b9a}
+.chip-emp{background:#fff8e1;color:#b36a00}
+.chip-off{background:#fce4ec;color:#880e4f}
+.chip-shared{background:#e8f5e9;color:#2e7d32}
+.chip-private{background:#f5f5f5;color:#888}
+.chip-pending{background:#fff8e1;color:#b36a00}
+.chip-expired{background:#ffebee;color:#c62828}
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;border:none;transition:all .15s}
+.act-dl{background:#e3f2fd;color:#1565c0}
+.act-dl:hover{background:#bbdefb}
+.act-view{background:#f5f5f5;color:#555}
+.act-view:hover{background:#e0e0e0}
+.act-share{background:#e8f5e9;color:#2e7d32}
+.act-share:hover{background:#c8e6c9}
+.act-del{background:#ffebee;color:#c62828}
+.act-del:hover{background:#ffcdd2}
+.act-row{display:flex;gap:4px}
+.pg-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.pg-btns{display:flex;gap:4px}
+.pgb{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555;background:#fff}
+.pgb.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+
+/* Storage bar */
+.storage-bar{background:#f0f0f0;border-radius:6px;height:10px;overflow:hidden;margin:10px 0 6px;display:flex}
+.storage-seg{height:100%}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:#888;margin-bottom:20px}
+.breadcrumb span{color:#1976d2;cursor:pointer;font-weight:600}
+.breadcrumb span:hover{text-decoration:underline}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Documents</div>
+      <div class="topbar-right">
+        <button class="badge-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge">7</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div>
+            <div style="font-size:13px;font-weight:600">HR Manager</div>
+            <div style="font-size:11px;color:#888">Admin</div>
+          </div>
+          <div class="user-avatar">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Documents</div>
+          <div class="page-sub">Centralized HR document repository — policies, contracts, payslips &amp; compliance files</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            New Folder
+          </button>
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share Access
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+            Upload Document
+          </button>
+        </div>
+      </div>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <span>All Documents</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="color:#888;cursor:default">Root</span>
+      </div>
+
+      <!-- Upload Drop Zone -->
+      <div class="upload-zone">
+        <div class="upload-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        </div>
+        <div class="upload-title">Drag &amp; drop files here or click to upload</div>
+        <div class="upload-sub">Supports PDF, Word, Excel, Images up to 25MB per file</div>
+        <div class="upload-types">
+          <span class="utype">PDF</span>
+          <span class="utype">DOCX</span>
+          <span class="utype">XLSX</span>
+          <span class="utype">JPG / PNG</span>
+          <span class="utype">ZIP</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Total Documents
+            <div class="stat-icon" style="background:#e3f2fd;color:#1565c0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+          </div>
+          <div class="stat-num">347</div>
+          <div class="stat-foot" style="color:#2e7d32;font-weight:600">+18 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Storage Used
+            <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="stat-num">4.2 <span style="font-size:16px;color:#888;font-weight:400">GB</span></div>
+          <div class="stat-foot">of 10 GB · 42% used</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Expiring Soon
+            <div class="stat-icon" style="background:#ffebee;color:#c62828">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+          </div>
+          <div class="stat-num" style="color:#c62828">6</div>
+          <div class="stat-foot">Within 30 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Pending e-Sign
+            <div class="stat-icon" style="background:#fff8e1;color:#b36a00">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+          </div>
+          <div class="stat-num" style="color:#e65100">4</div>
+          <div class="stat-foot">Awaiting signatures</div>
+        </div>
+      </div>
+
+      <!-- Folders -->
+      <div class="section-row">
+        <div class="section-title">Folders</div>
+        <span style="font-size:12px;color:#1976d2;cursor:pointer;font-weight:600">Manage Folders</span>
+      </div>
+      <div class="folder-grid">
+        <div class="folder-card">
+          <span class="folder-icon">📁</span>
+          <div class="folder-name">Employee Records</div>
+          <div class="folder-count">82 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">📋</span>
+          <div class="folder-name">Offer Letters</div>
+          <div class="folder-count">14 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">📄</span>
+          <div class="folder-name">Contracts</div>
+          <div class="folder-count">26 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">🧾</span>
+          <div class="folder-name">Payslips</div>
+          <div class="folder-count">168 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">📑</span>
+          <div class="folder-name">HR Policies</div>
+          <div class="folder-count">18 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">🛡️</span>
+          <div class="folder-name">Compliance</div>
+          <div class="folder-count">24 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">📊</span>
+          <div class="folder-name">Appraisal Docs</div>
+          <div class="folder-count">11 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">🎓</span>
+          <div class="folder-name">Certificates</div>
+          <div class="folder-count">32 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">🏥</span>
+          <div class="folder-name">Medical Records</div>
+          <div class="folder-count">9 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">📤</span>
+          <div class="folder-name">Exit Documents</div>
+          <div class="folder-count">4 files</div>
+        </div>
+        <div class="folder-card">
+          <span class="folder-icon">🔖</span>
+          <div class="folder-name">Templates</div>
+          <div class="folder-count">22 files</div>
+        </div>
+        <div class="folder-card add">
+          <span class="folder-icon" style="color:#ccc">➕</span>
+          <div class="folder-name">New Folder</div>
+          <div class="folder-count" style="color:#ccc">Create</div>
+        </div>
+      </div>
+
+      <!-- Storage + Recent Activity -->
+      <div class="two-col">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Recent Activity</div>
+            <span class="box-action">View All</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#2e7d32"></div>
+            <div style="flex:1">
+              <div class="act-text">Offer_Letter_Emily_Chen.pdf uploaded</div>
+              <div class="act-meta">HR Manager · Offer Letters · 1 hour ago</div>
+            </div>
+            <span class="act-chip" style="background:#e8f5e9;color:#2e7d32">Uploaded</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#1976d2"></div>
+            <div style="flex:1">
+              <div class="act-text">Employment_Contract_SJ_FY26.docx shared with Sarah Johnson</div>
+              <div class="act-meta">HR Manager · Contracts · 3 hours ago</div>
+            </div>
+            <span class="act-chip" style="background:#e3f2fd;color:#1565c0">Shared</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#b36a00"></div>
+            <div style="flex:1">
+              <div class="act-text">Payslip_May26_All.zip downloaded</div>
+              <div class="act-meta">Finance Team · Payslips · 5 hours ago</div>
+            </div>
+            <span class="act-chip" style="background:#fff8e1;color:#b36a00">Downloaded</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#6a1b9a"></div>
+            <div style="flex:1">
+              <div class="act-text">HR_Policy_Leave_v3.pdf updated</div>
+              <div class="act-meta">HR Manager · HR Policies · Yesterday</div>
+            </div>
+            <span class="act-chip" style="background:#f3e5f5;color:#6a1b9a">Updated</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#c62828"></div>
+            <div style="flex:1">
+              <div class="act-text">NDA_DanielWilson.pdf e-sign requested</div>
+              <div class="act-meta">HR Manager · Contracts · May 11, 2026</div>
+            </div>
+            <span class="act-chip" style="background:#ffebee;color:#c62828">e-Sign</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-dot" style="background:#2e7d32"></div>
+            <div style="flex:1">
+              <div class="act-text">Form_16_FY2526_All.zip generated &amp; saved</div>
+              <div class="act-meta">Auto-generated · Compliance · May 10, 2026</div>
+            </div>
+            <span class="act-chip" style="background:#e8f5e9;color:#2e7d32">Generated</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Storage Breakdown</div>
+            <span class="box-action">Manage</span>
+          </div>
+          <div style="margin-bottom:4px;font-size:13px;color:#555">4.2 GB used of 10 GB</div>
+          <div class="storage-bar">
+            <div class="storage-seg" style="width:37%;background:#1976d2"></div>
+            <div class="storage-seg" style="width:18%;background:#66bb6a"></div>
+            <div class="storage-seg" style="width:12%;background:#f9a825"></div>
+            <div class="storage-seg" style="width:9%;background:#ab47bc"></div>
+            <div class="storage-seg" style="width:7%;background:#26c6da"></div>
+            <div class="storage-seg" style="width:17%;background:#f0f0f0"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#1976d2;display:inline-block"></span>Payslips</span>
+              <span style="font-weight:700">1.56 GB</span><span style="color:#888">37%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#66bb6a;display:inline-block"></span>Employee Records</span>
+              <span style="font-weight:700">0.76 GB</span><span style="color:#888">18%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#f9a825;display:inline-block"></span>Contracts</span>
+              <span style="font-weight:700">0.50 GB</span><span style="color:#888">12%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#ab47bc;display:inline-block"></span>Compliance</span>
+              <span style="font-weight:700">0.38 GB</span><span style="color:#888">9%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#26c6da;display:inline-block"></span>Others</span>
+              <span style="font-weight:700">1.00 GB</span><span style="color:#888">24%</span>
+            </div>
+          </div>
+          <div style="margin-top:18px;border-top:1px solid #f0f0f0;padding-top:14px">
+            <div class="box-title" style="font-size:13px;margin-bottom:10px">⚠️ Expiring Documents</div>
+            <div class="expiry-item">
+              <div class="exp-icon" style="background:#ffebee;color:#c62828">📄</div>
+              <div style="flex:1">
+                <div class="exp-name">Work Permit — John Doe</div>
+                <div class="exp-who">Expires Jun 1, 2026</div>
+              </div>
+              <span class="exp-tag tag-red">13 days</span>
+            </div>
+            <div class="expiry-item">
+              <div class="exp-icon" style="background:#fff8e1;color:#b36a00">📋</div>
+              <div style="flex:1">
+                <div class="exp-name">Contract — Lisa Anderson</div>
+                <div class="exp-who">Expires Jun 15, 2026</div>
+              </div>
+              <span class="exp-tag tag-amber">28 days</span>
+            </div>
+            <div class="expiry-item">
+              <div class="exp-icon" style="background:#fff8e1;color:#b36a00">🛡️</div>
+              <div style="flex:1">
+                <div class="exp-name">Insurance Policy — Company</div>
+                <div class="exp-who">Expires Jun 20, 2026</div>
+              </div>
+              <span class="exp-tag tag-amber">33 days</span>
+            </div>
+            <div class="expiry-item">
+              <div class="exp-icon" style="background:#e8f5e9;color:#2e7d32">🎓</div>
+              <div style="flex:1">
+                <div class="exp-name">Safety Certificate — Office</div>
+                <div class="exp-who">Expires Jul 10, 2026</div>
+              </div>
+              <span class="exp-tag tag-green">53 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Library Table -->
+      <div class="section-row">
+        <div class="section-title">Document Library</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Bulk Download</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Request e-Sign</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All Files (347)</div>
+        <div class="tab">Employee Records (82)</div>
+        <div class="tab">Payslips (168)</div>
+        <div class="tab">Contracts (26)</div>
+        <div class="tab">Policies (18)</div>
+        <div class="tab">Compliance (24)</div>
+        <div class="tab">e-Sign Queue (4)</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search by file name, employee, category..." />
+        </div>
+        <select class="fsel">
+          <option>All Categories</option>
+          <option>Employee Records</option>
+          <option>Offer Letters</option>
+          <option>Contracts</option>
+          <option>Payslips</option>
+          <option>Policies</option>
+          <option>Compliance</option>
+        </select>
+        <select class="fsel">
+          <option>All Formats</option>
+          <option>PDF</option>
+          <option>DOCX</option>
+          <option>XLSX</option>
+          <option>ZIP</option>
+          <option>Image</option>
+        </select>
+        <select class="fsel">
+          <option>All Access</option>
+          <option>Shared</option>
+          <option>Private</option>
+        </select>
+        <div class="view-btns">
+          <button class="vbtn active" title="List view">☰</button>
+          <button class="vbtn" title="Grid view">⊞</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:38px"><input type="checkbox" style="cursor:pointer"/></th>
+              <th style="width:260px">File Name</th>
+              <th style="width:120px">Category</th>
+              <th style="width:90px">Format</th>
+              <th style="width:70px">Size</th>
+              <th style="width:120px">Employee</th>
+              <th style="width:100px">Uploaded</th>
+              <th style="width:90px">Access</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#ffebee;color:#c62828">PDF</div><div><div class="fname">Offer_Letter_EmilyCheng_FY26.pdf</div><div style="font-size:11px;color:#888">Offer Letters</div></div></div></td>
+              <td><span class="chip chip-off">Offer Letter</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">284 KB</td>
+              <td style="color:#555">Emily Chen</td>
+              <td style="color:#888">Today</td>
+              <td><span class="chip chip-private">Private</span></td>
+              <td><div class="act-row"><button class="act-btn act-view" title="View">👁</button><button class="act-btn act-dl" title="Download">↓</button><button class="act-btn act-share" title="Share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#e3f2fd;color:#1565c0">DOC</div><div><div class="fname">Employment_Contract_SarahJ_FY26.docx</div><div style="font-size:11px;color:#888">Contracts</div></div></div></td>
+              <td><span class="chip chip-comp" style="background:#e0f7fa;color:#00838f">Contract</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">DOCX</span></td>
+              <td style="color:#888">142 KB</td>
+              <td style="color:#555">Sarah Johnson</td>
+              <td style="color:#888">Today</td>
+              <td><span class="chip chip-shared">Shared</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#e8f5e9;color:#2e7d32">XLS</div><div><div class="fname">Payslip_May2026_All_Employees.xlsx</div><div style="font-size:11px;color:#888">Payslips</div></div></div></td>
+              <td><span class="chip chip-pay">Payslip</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:4px">XLSX</span></td>
+              <td style="color:#888">1.2 MB</td>
+              <td style="color:#555">All Employees</td>
+              <td style="color:#888">May 12</td>
+              <td><span class="chip chip-private">Private</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#ffebee;color:#c62828">PDF</div><div><div class="fname">HR_Leave_Policy_v3_2026.pdf</div><div style="font-size:11px;color:#888">HR Policies</div></div></div></td>
+              <td><span class="chip chip-pol">HR Policy</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">892 KB</td>
+              <td style="color:#555">All Employees</td>
+              <td style="color:#888">May 11</td>
+              <td><span class="chip chip-shared">Shared</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#ffebee;color:#c62828">PDF</div><div><div class="fname">NDA_DanielWilson_2026.pdf</div><div style="font-size:11px;color:#888">Contracts · ✍️ e-Sign pending</div></div></div></td>
+              <td><span class="chip chip-comp" style="background:#e0f7fa;color:#00838f">Contract</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">310 KB</td>
+              <td style="color:#555">Daniel Wilson</td>
+              <td style="color:#888">May 11</td>
+              <td><span class="chip chip-pending">e-Sign</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#f3e5f5;color:#6a1b9a">ZIP</div><div><div class="fname">Form_16_FY2526_AllEmployees.zip</div><div style="font-size:11px;color:#888">Compliance</div></div></div></td>
+              <td><span class="chip" style="background:#e0f7fa;color:#00838f">Compliance</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#f3e5f5;color:#6a1b9a;padding:2px 8px;border-radius:4px">ZIP</span></td>
+              <td style="color:#888">4.8 MB</td>
+              <td style="color:#555">All Employees</td>
+              <td style="color:#888">May 10</td>
+              <td><span class="chip chip-private">Private</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#e8f5e9;color:#2e7d32">XLS</div><div><div class="fname">Payslip_Apr2026_All_Employees.xlsx</div><div style="font-size:11px;color:#888">Payslips</div></div></div></td>
+              <td><span class="chip chip-pay">Payslip</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:4px">XLSX</span></td>
+              <td style="color:#888">1.1 MB</td>
+              <td style="color:#555">All Employees</td>
+              <td style="color:#888">Apr 12</td>
+              <td><span class="chip chip-private">Private</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" style="cursor:pointer"/></td>
+              <td><div class="file-cell"><div class="file-icon" style="background:#ffebee;color:#c62828">PDF</div><div><div class="fname">WorkPermit_JohnDoe_Expiring.pdf</div><div style="font-size:11px;color:#888;color:#c62828">⚠️ Expires Jun 1, 2026</div></div></div></td>
+              <td><span class="chip chip-emp">Employee Rec.</span></td>
+              <td><span style="font-size:11px;font-weight:700;background:#ffebee;color:#c62828;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">520 KB</td>
+              <td style="color:#555">John Doe</td>
+              <td style="color:#888">Jan 1, 2025</td>
+              <td><span class="chip chip-expired">Expiring</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button><button class="act-btn act-dl">↓</button><button class="act-btn act-del" title="Delete">🗑</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pg-footer">
+          <span>Showing 1–8 of 347 documents &nbsp;·&nbsp; 0 selected</span>
+          <div class="pg-btns">
+            <div class="pgb cur">1</div>
+            <div class="pgb">2</div>
+            <div class="pgb">3</div>
+            <span style="padding:0 4px;line-height:28px">...</span>
+            <div class="pgb">44</div>
+            <div class="pgb" style="width:auto;padding:0 10px">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,820 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px;border-bottom:1px solid #e5e5e5}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-icon{width:48px;height:48px;background:#1565c0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.logo-text .brand{font-size:22px;font-weight:700;color:#1a1a1a}
+.logo-text .sub{font-size:12px;color:#888}
+.nav{padding:16px 12px;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:#555;margin-bottom:2px;transition:background .12s}
+.nav-item:hover{background:#f5f5f5;color:#1a1a1a}
+.nav-item.active{background:#e3f2fd;color:#1565c0;font-weight:600}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0}
+.nav-item.active .nav-icon{opacity:1}
+.sidebar-bottom{padding:12px;border-top:1px solid #e5e5e5}
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;height:65px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:22px;font-weight:700;color:#1a1a1a}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.badge-btn{position:relative;width:40px;height:40px;background:none;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge-btn:hover{background:#f5f5f5}
+.badge{position:absolute;top:4px;right:4px;width:18px;height:18px;background:#e53935;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.user-avatar{width:38px;height:38px;background:#1976d2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.content{flex:1;padding:32px 40px}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:30px;font-weight:700}
+.page-sub{font-size:14px;color:#888;margin-top:4px}
+.header-actions{display:flex;gap:10px;align-items:center}
+.btn{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-outline{background:#fff;border:1.5px solid #ddd;color:#555}
+.btn-outline:hover{border-color:#1976d2;color:#1976d2}
+.btn-primary{background:#1976d2;color:#fff}
+.btn-primary:hover{background:#1565c0}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+.stat-card{background:#fff;border-radius:10px;padding:20px 22px;border:1px solid #e8e8e8}
+.stat-lbl{font-size:12px;color:#888;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-foot{font-size:12px;color:#888;margin-top:6px}
+.trend-up{color:#2e7d32;font-weight:600}
+.trend-dn{color:#c62828;font-weight:600}
+
+.quick-reports{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.qr-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:18px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:10px}
+.qr-card:hover{border-color:#1976d2;box-shadow:0 2px 12px rgba(25,118,210,.08)}
+.qr-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.qr-name{font-size:14px;font-weight:700;color:#1a1a1a}
+.qr-sub{font-size:12px;color:#888}
+.qr-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.qr-time{font-size:11px;color:#aaa}
+.qr-btn{font-size:11px;font-weight:700;color:#1976d2;cursor:pointer}
+
+.three-col{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:18px;margin-bottom:26px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:26px}
+.box{background:#fff;border-radius:10px;border:1px solid #e8e8e8;padding:20px}
+.box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.box-title{font-size:15px;font-weight:700}
+.box-action{font-size:12px;color:#1976d2;cursor:pointer;font-weight:600}
+
+.chart-area{height:160px;display:flex;align-items:flex-end;gap:6px;padding-top:8px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:height .3s;min-height:4px}
+.bar-lbl{font-size:10px;color:#888;white-space:nowrap}
+.bar-val{font-size:10px;font-weight:700;color:#555}
+
+.donut-wrap{position:relative;width:120px;height:120px;flex-shrink:0}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-num{font-size:22px;font-weight:700;color:#1a1a1a;line-height:1}
+.donut-sub{font-size:11px;color:#888}
+
+.legend-list{display:flex;flex-direction:column;gap:8px;flex:1}
+.leg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.leg-left{display:flex;align-items:center;gap:8px}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.leg-name{color:#555}
+.leg-val{font-weight:700;color:#1a1a1a}
+.leg-pct{color:#888;font-size:11px}
+
+.line-area{height:140px;position:relative;overflow:hidden}
+.line-svg{width:100%;height:100%}
+
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden;margin-bottom:26px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:#f8f9fa}
+th{padding:13px 14px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #e8e8e8}
+td{padding:13px 14px;font-size:13px;color:#1a1a1a;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-hr{background:#e3f2fd;color:#1565c0}
+.chip-pay{background:#e8f5e9;color:#2e7d32}
+.chip-att{background:#fff8e1;color:#b36a00}
+.chip-perf{background:#f3e5f5;color:#6a1b9a}
+.chip-comp{background:#e0f7fa;color:#00838f}
+.chip-new{background:#ffebee;color:#c62828}
+.chip-ready{background:#e8f5e9;color:#2e7d32}
+.chip-sched{background:#e3f2fd;color:#1565c0}
+.chip-gen{background:#f5f5f5;color:#555}
+
+.act-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;border:none;transition:all .15s}
+.act-dl{background:#e3f2fd;color:#1565c0}
+.act-dl:hover{background:#bbdefb}
+.act-view{background:#f5f5f5;color:#555}
+.act-view:hover{background:#e0e0e0}
+.act-share{background:#e8f5e9;color:#2e7d32}
+.act-share:hover{background:#c8e6c9}
+.act-row{display:flex;gap:5px}
+
+.tabs{display:flex;border-bottom:2px solid #e5e5e5;margin-bottom:18px}
+.tab{padding:11px 18px;font-size:14px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .13s;white-space:nowrap}
+.tab.active{color:#1565c0;border-bottom-color:#1565c0;font-weight:600}
+.filters{display:flex;gap:10px;margin-bottom:14px}
+.search-box{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 14px;height:42px}
+.search-box input{border:none;outline:none;font-size:13px;width:100%;background:transparent}
+.search-box input::placeholder{color:#aaa}
+.fsel{height:42px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0 12px;font-size:13px;color:#555;background:#fff;outline:none}
+
+.section-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:17px;font-weight:700}
+
+.pg-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #f0f0f0;font-size:12px;color:#888}
+.pg-btns{display:flex;gap:4px}
+.pgb{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;color:#555;background:#fff}
+.pgb.cur{background:#1976d2;color:#fff;border-color:#1976d2}
+
+.sched-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.sched-item:last-child{border-bottom:none}
+.sched-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sched-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.sched-when{font-size:11px;color:#888;margin-top:2px}
+.sched-freq{margin-left:auto;font-size:11px;font-weight:600;color:#1976d2;white-space:nowrap}
+
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi-box{background:#f8f9fa;border-radius:8px;padding:12px 14px}
+.kpi-label{font-size:11px;color:#888;margin-bottom:4px}
+.kpi-value{font-size:20px;font-weight:700;color:#1a1a1a;line-height:1}
+.kpi-change{font-size:11px;margin-top:3px}
+
+.prog-bar{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:3px}
+</style>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-row">
+        <div class="logo-icon">PV</div>
+        <div class="logo-text">
+          <div class="brand">PayVidhi</div>
+          <div class="sub">HRMS Portal</div>
+        </div>
+      </div>
+    </div>
+   <nav class="nav" >
+     <a style="text-decoration: none;" href="payvidhi_dashboard.html"> <div class="nav-item" >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div> </a>
+    <a href="payvidhi_employees.html" style="text-decoration: none;">  <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Employees
+      </div> </a>
+      <a href="payvidhi_attendance.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div> </a>
+     <a href="payvidhi_leave_management.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Leave Management
+        <span class="nav-badge">12</span>
+      </div> </a>
+     <a href="payvidhi_payroll.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        Payroll
+      </div> </a>
+      <a href="payvidhi_performance.html" style="text-decoration: none;"> <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Performance
+        <span class="nav-badge" style="background:#e65100">5</span>
+      </div> </a>
+      <a href="payvidhi_reports.html" style="text-decoration: none;"> <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div> </a>
+      <a href="payvidhi_documents.html" style="text-decoration: none;"><div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents
+        <span class="nav-badge" style="background:#b36a00">4</span>
+      </div> </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Reports</div>
+      <div class="topbar-right">
+        <button class="badge-btn" aria-label="Notifications">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge">7</span>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div>
+            <div style="font-size:13px;font-weight:600">HR Manager</div>
+            <div style="font-size:11px;color:#888">Admin</div>
+          </div>
+          <div class="user-avatar">HR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reports &amp; Analytics</div>
+          <div class="page-sub">Workforce insights, compliance reports &amp; custom analytics — FY 2025–26</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Report Builder
+          </button>
+          <button class="btn btn-outline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule Report
+          </button>
+          <button class="btn btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            Export All
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Total Reports Generated
+            <div class="stat-icon" style="background:#e3f2fd;color:#1565c0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+          </div>
+          <div class="stat-num">128</div>
+          <div class="stat-foot">This financial year</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Scheduled Reports
+            <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="stat-num" style="color:#2e7d32">14</div>
+          <div class="stat-foot">Auto-generated monthly</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Compliance Reports Due
+            <div class="stat-icon" style="background:#fff8e1;color:#b36a00">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+          </div>
+          <div class="stat-num" style="color:#e65100">3</div>
+          <div class="stat-foot">Due before Jun 30</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">
+            Custom Dashboards
+            <div class="stat-icon" style="background:#f3e5f5;color:#6a1b9a">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </div>
+          </div>
+          <div class="stat-num">7</div>
+          <div class="stat-foot">Saved views</div>
+        </div>
+      </div>
+
+      <div class="section-row" style="margin-bottom:14px">
+        <div class="section-title">Quick Report Templates</div>
+        <span style="font-size:12px;color:#1976d2;cursor:pointer;font-weight:600">View All Templates</span>
+      </div>
+      <div class="quick-reports">
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#e3f2fd;color:#1565c0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <div class="qr-name">Headcount Report</div>
+          <div class="qr-sub">Active, on leave, exited employees by dept.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: May 1, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#e8f5e9;color:#2e7d32">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+          </div>
+          <div class="qr-name">Payroll Summary</div>
+          <div class="qr-sub">Gross, deductions &amp; net payout by month.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: May 12, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#fff8e1;color:#b36a00">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="qr-name">Attendance Report</div>
+          <div class="qr-sub">Present, absent, late arrivals &amp; OT.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: May 12, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#f3e5f5;color:#6a1b9a">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="qr-name">Performance Report</div>
+          <div class="qr-sub">Ratings, KPIs &amp; goal attainment by cycle.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: Apr 30, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#e0f7fa;color:#00838f">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <div class="qr-name">Leave Analysis</div>
+          <div class="qr-sub">Leave trends, balances &amp; approval rates.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: May 10, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#fce4ec;color:#880e4f">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="qr-name">Attrition Report</div>
+          <div class="qr-sub">Turnover rate, exit reasons &amp; trends.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: Mar 31, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-icon" style="background:#ffebee;color:#c62828">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="qr-name">Compliance Report</div>
+          <div class="qr-sub">PF, ESIC, TDS &amp; PT filing status.</div>
+          <div class="qr-footer">
+            <span class="qr-time">Last: Apr 30, 2026</span>
+            <span class="qr-btn">Generate ›</span>
+          </div>
+        </div>
+        <div class="qr-card" style="border-style:dashed;border-color:#ccc;background:#fafafa">
+          <div class="qr-icon" style="background:#f5f5f5;color:#aaa">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <div class="qr-name" style="color:#aaa">Custom Report</div>
+          <div class="qr-sub" style="color:#bbb">Build your own with Report Builder.</div>
+          <div class="qr-footer">
+            <span></span>
+            <span class="qr-btn">Build ›</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Monthly Headcount Trend</div>
+            <select style="font-size:12px;border:1px solid #e0e0e0;border-radius:6px;padding:4px 8px;color:#555;outline:none;cursor:pointer">
+              <option>FY 2025–26</option><option>FY 2024–25</option>
+            </select>
+          </div>
+          <div class="chart-area">
+            <div class="bar-col">
+              <span class="bar-val">11</span>
+              <div class="bar-wrap"><div class="bar" style="height:68%;background:#bbdefb"></div></div>
+              <span class="bar-lbl">Jun</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">11</span>
+              <div class="bar-wrap"><div class="bar" style="height:68%;background:#bbdefb"></div></div>
+              <span class="bar-lbl">Jul</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">12</span>
+              <div class="bar-wrap"><div class="bar" style="height:74%;background:#90caf9"></div></div>
+              <span class="bar-lbl">Aug</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">12</span>
+              <div class="bar-wrap"><div class="bar" style="height:74%;background:#90caf9"></div></div>
+              <span class="bar-lbl">Sep</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">13</span>
+              <div class="bar-wrap"><div class="bar" style="height:80%;background:#64b5f6"></div></div>
+              <span class="bar-lbl">Oct</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">13</span>
+              <div class="bar-wrap"><div class="bar" style="height:80%;background:#64b5f6"></div></div>
+              <span class="bar-lbl">Nov</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">13</span>
+              <div class="bar-wrap"><div class="bar" style="height:80%;background:#64b5f6"></div></div>
+              <span class="bar-lbl">Dec</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">14</span>
+              <div class="bar-wrap"><div class="bar" style="height:86%;background:#42a5f5"></div></div>
+              <span class="bar-lbl">Jan</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">14</span>
+              <div class="bar-wrap"><div class="bar" style="height:86%;background:#42a5f5"></div></div>
+              <span class="bar-lbl">Feb</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">14</span>
+              <div class="bar-wrap"><div class="bar" style="height:86%;background:#42a5f5"></div></div>
+              <span class="bar-lbl">Mar</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">14</span>
+              <div class="bar-wrap"><div class="bar" style="height:86%;background:#42a5f5"></div></div>
+              <span class="bar-lbl">Apr</span>
+            </div>
+            <div class="bar-col">
+              <span class="bar-val">14</span>
+              <div class="bar-wrap"><div class="bar" style="height:86%;background:#1976d2"></div></div>
+              <span class="bar-lbl" style="font-weight:700;color:#1976d2">May</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:16px">
+            <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:#2e7d32">+3</div><div style="font-size:11px;color:#888">New Hires YTD</div></div>
+            <div style="text-align:center;border-left:1px solid #f0f0f0;border-right:1px solid #f0f0f0;padding:0 16px"><div style="font-size:18px;font-weight:700;color:#c62828">0</div><div style="font-size:11px;color:#888">Attrition YTD</div></div>
+            <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:#1976d2">0%</div><div style="font-size:11px;color:#888">Turnover Rate</div></div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Dept. Distribution</div>
+            <span class="box-action">Breakdown</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f0" stroke-width="18"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1976d2" stroke-width="18" stroke-dasharray="112 202" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#66bb6a" stroke-width="18" stroke-dasharray="57 202" stroke-dashoffset="-112" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#ab47bc" stroke-width="18" stroke-dasharray="57 202" stroke-dashoffset="-169" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#f9a825" stroke-width="18" stroke-dasharray="43 202" stroke-dashoffset="-226" transform="rotate(-90 60 60)"/>
+              <text x="60" y="55" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">14</text>
+              <text x="60" y="70" text-anchor="middle" font-size="10" fill="#888">employees</text>
+            </svg>
+            <div class="legend-list">
+              <div class="leg-row">
+                <div class="leg-left"><span class="leg-dot" style="background:#1976d2"></span><span class="leg-name">Engineering</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><span class="leg-val">5</span><span class="leg-pct">36%</span></div>
+              </div>
+              <div class="leg-row">
+                <div class="leg-left"><span class="leg-dot" style="background:#66bb6a"></span><span class="leg-name">Sales</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><span class="leg-val">4</span><span class="leg-pct">29%</span></div>
+              </div>
+              <div class="leg-row">
+                <div class="leg-left"><span class="leg-dot" style="background:#ab47bc"></span><span class="leg-name">Marketing</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><span class="leg-val">3</span><span class="leg-pct">21%</span></div>
+              </div>
+              <div class="leg-row">
+                <div class="leg-left"><span class="leg-dot" style="background:#f9a825"></span><span class="leg-name">Operations</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><span class="leg-val">2</span><span class="leg-pct">14%</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;border-top:1px solid #f0f0f0;padding-top:12px">
+            <div style="font-size:12px;font-weight:700;color:#888;margin-bottom:8px">Employment Type</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="chip" style="background:#e3f2fd;color:#1565c0;font-size:11px">Full-time 12</span>
+              <span class="chip" style="background:#fff8e1;color:#b36a00;font-size:11px">Contract 1</span>
+              <span class="chip" style="background:#f3e5f5;color:#6a1b9a;font-size:11px">Intern 1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Key HR Metrics</div>
+            <span class="box-action">Apr–May 2026</span>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-box">
+              <div class="kpi-label">Attendance Rate</div>
+              <div class="kpi-value" style="color:#2e7d32">91.3%</div>
+              <div class="kpi-change trend-up">+2.1% vs Apr</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:91%;background:#2e7d32"></div></div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Leave Utilization</div>
+              <div class="kpi-value" style="color:#1976d2">34%</div>
+              <div class="kpi-change" style="color:#888">of annual quota</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:34%;background:#1976d2"></div></div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Avg. Work Hours</div>
+              <div class="kpi-value">9.1h</div>
+              <div class="kpi-change" style="color:#888">per day / emp</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:76%;background:#f9a825"></div></div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Payroll Accuracy</div>
+              <div class="kpi-value" style="color:#2e7d32">99.8%</div>
+              <div class="kpi-change trend-up">No errors</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:99%;background:#2e7d32"></div></div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Offer Acceptance</div>
+              <div class="kpi-value" style="color:#1976d2">85%</div>
+              <div class="kpi-change trend-up">+5% vs last</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:85%;background:#1976d2"></div></div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Training Hours</div>
+              <div class="kpi-value">18.4h</div>
+              <div class="kpi-change" style="color:#888">avg per employee</div>
+              <div class="prog-bar"><div class="prog-fill" style="width:61%;background:#ab47bc"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Payroll Cost Trend — Monthly (₹ Lakhs)</div>
+            <span class="box-action">Full History</span>
+          </div>
+          <div style="position:relative;height:130px;margin-top:8px">
+            <svg width="100%" height="130" viewBox="0 0 480 130" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1976d2" stop-opacity="0.15"/>
+                  <stop offset="100%" stop-color="#1976d2" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <polyline points="0,110 40,108 80,104 120,100 160,96 200,92 240,88 280,84 320,82 360,80 400,78 440,75 480,72" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="3,3"/>
+              <polygon points="0,110 40,100 80,98 120,94 160,90 200,86 240,82 280,78 320,74 360,70 400,66 440,63 480,60 480,130 0,130" fill="url(#pg)"/>
+              <polyline points="0,110 40,100 80,98 120,94 160,90 200,86 240,82 280,78 320,74 360,70 400,66 440,63 480,60" fill="none" stroke="#1976d2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="0" cy="110" r="4" fill="#1976d2"/>
+              <circle cx="80" cy="98" r="4" fill="#1976d2"/>
+              <circle cx="160" cy="90" r="4" fill="#1976d2"/>
+              <circle cx="240" cy="82" r="4" fill="#1976d2"/>
+              <circle cx="320" cy="74" r="4" fill="#1976d2"/>
+              <circle cx="400" cy="66" r="4" fill="#1976d2"/>
+              <circle cx="480" cy="60" r="5" fill="#1565c0" stroke="#fff" stroke-width="2"/>
+              <text x="0" y="126" font-size="9" fill="#aaa" text-anchor="middle">Jun</text>
+              <text x="80" y="126" font-size="9" fill="#aaa" text-anchor="middle">Aug</text>
+              <text x="160" y="126" font-size="9" fill="#aaa" text-anchor="middle">Oct</text>
+              <text x="240" y="126" font-size="9" fill="#aaa" text-anchor="middle">Dec</text>
+              <text x="320" y="126" font-size="9" fill="#aaa" text-anchor="middle">Feb</text>
+              <text x="400" y="126" font-size="9" fill="#aaa" text-anchor="middle">Apr</text>
+              <text x="480" y="126" font-size="9" fill="#1976d2" font-weight="700" text-anchor="middle">May</text>
+              <text x="490" y="63" font-size="9" fill="#1565c0" font-weight="700">₹21.4L</text>
+            </svg>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px">
+            <div style="text-align:center;background:#f8f9fa;border-radius:8px;padding:10px">
+              <div style="font-size:15px;font-weight:700;color:#1a1a1a">₹18.7L</div>
+              <div style="font-size:10px;color:#888;margin-top:2px">Jun '25 start</div>
+            </div>
+            <div style="text-align:center;background:#f8f9fa;border-radius:8px;padding:10px">
+              <div style="font-size:15px;font-weight:700;color:#1a1a1a">₹19.6L</div>
+              <div style="font-size:10px;color:#888;margin-top:2px">Q2 average</div>
+            </div>
+            <div style="text-align:center;background:#f8f9fa;border-radius:8px;padding:10px">
+              <div style="font-size:15px;font-weight:700;color:#1a1a1a">₹20.5L</div>
+              <div style="font-size:10px;color:#888;margin-top:2px">Q3 average</div>
+            </div>
+            <div style="text-align:center;background:#e3f2fd;border-radius:8px;padding:10px">
+              <div style="font-size:15px;font-weight:700;color:#1565c0">₹21.4L</div>
+              <div style="font-size:10px;color:#888;margin-top:2px">May '26 (latest)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <div class="box-title">Scheduled Reports</div>
+            <span class="box-action">Manage Schedule</span>
+          </div>
+          <div class="sched-item">
+            <div class="sched-icon" style="background:#e3f2fd;color:#1565c0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="sched-name">Monthly Headcount Report</div>
+              <div class="sched-when">Next: Jun 1, 2026 · Sent to: HR Team</div>
+            </div>
+            <span class="sched-freq">Monthly</span>
+          </div>
+          <div class="sched-item">
+            <div class="sched-icon" style="background:#e8f5e9;color:#2e7d32">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="sched-name">Payroll Summary Report</div>
+              <div class="sched-when">Next: Jun 1, 2026 · Sent to: Finance, HR</div>
+            </div>
+            <span class="sched-freq">Monthly</span>
+          </div>
+          <div class="sched-item">
+            <div class="sched-icon" style="background:#fff8e1;color:#b36a00">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="sched-name">Weekly Attendance Digest</div>
+              <div class="sched-when">Next: May 17, 2026 · Sent to: Managers</div>
+            </div>
+            <span class="sched-freq">Weekly</span>
+          </div>
+          <div class="sched-item">
+            <div class="sched-icon" style="background:#ffebee;color:#c62828">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="sched-name">Compliance Status Report</div>
+              <div class="sched-when">Next: Jun 1, 2026 · Sent to: Finance, Compliance</div>
+            </div>
+            <span class="sched-freq">Monthly</span>
+          </div>
+          <div class="sched-item">
+            <div class="sched-icon" style="background:#f3e5f5;color:#6a1b9a">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div style="flex:1">
+              <div class="sched-name">Performance Review Summary</div>
+              <div class="sched-when">Next: Jun 30, 2026 · Sent to: Leadership</div>
+            </div>
+            <span class="sched-freq">Quarterly</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <div class="section-title">Report Library</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Bulk Download</button>
+          <button class="btn btn-outline" style="padding:8px 14px;font-size:12px">Share Folder</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All Reports (128)</div>
+        <div class="tab">HR Reports (41)</div>
+        <div class="tab">Payroll (32)</div>
+        <div class="tab">Attendance (24)</div>
+        <div class="tab">Performance (18)</div>
+        <div class="tab">Compliance (13)</div>
+      </div>
+
+      <div class="filters">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search reports by name, type, date..." />
+        </div>
+        <select class="fsel">
+          <option>All Categories</option>
+          <option>HR</option>
+          <option>Payroll</option>
+          <option>Attendance</option>
+          <option>Performance</option>
+          <option>Compliance</option>
+        </select>
+        <select class="fsel">
+          <option>All Formats</option>
+          <option>PDF</option>
+          <option>Excel</option>
+          <option>CSV</option>
+        </select>
+        <select class="fsel">
+          <option>Any Period</option>
+          <option>May 2026</option>
+          <option>April 2026</option>
+          <option>Q4 FY 2025–26</option>
+          <option>FY 2025–26</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:260px">Report Name</th>
+              <th style="width:110px">Category</th>
+              <th style="width:90px">Period</th>
+              <th style="width:80px">Format</th>
+              <th style="width:90px">Generated</th>
+              <th style="width:110px">Generated By</th>
+              <th style="width:90px">Status</th>
+              <th style="width:90px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Payroll Summary — May 2026</td>
+              <td><span class="chip chip-pay">Payroll</span></td>
+              <td style="color:#555">May 2026</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">May 12, 2026</td>
+              <td style="color:#555">HR Manager</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl" title="Download">↓</button><button class="act-btn act-view" title="View">👁</button><button class="act-btn act-share" title="Share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Monthly Attendance Report — May 2026</td>
+              <td><span class="chip chip-att">Attendance</span></td>
+              <td style="color:#555">May 2026</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:4px">Excel</span></td>
+              <td style="color:#888">May 12, 2026</td>
+              <td style="color:#555">Auto-scheduled</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Headcount &amp; Attrition Report — Q4 FY26</td>
+              <td><span class="chip chip-hr">HR</span></td>
+              <td style="color:#555">Q4 FY26</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">May 10, 2026</td>
+              <td style="color:#555">HR Manager</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Performance Review Summary — FY 2025–26</td>
+              <td><span class="chip chip-perf">Performance</span></td>
+              <td style="color:#555">FY 2025–26</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">May 9, 2026</td>
+              <td style="color:#555">HR Manager</td>
+              <td><span class="chip chip-sched">Generating</span></td>
+              <td><div class="act-row"><button class="act-btn act-view">👁</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Leave Utilization Report — Apr 2026</td>
+              <td><span class="chip chip-hr">HR</span></td>
+              <td style="color:#555">Apr 2026</td>
+              <td><span style="font-size:11px;font-weight:700;background:#fff8e1;color:#b36a00;padding:2px 8px;border-radius:4px">CSV</span></td>
+              <td style="color:#888">May 1, 2026</td>
+              <td style="color:#555">Auto-scheduled</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">PF / ESIC Compliance Report — Q4 FY26</td>
+              <td><span class="chip chip-comp">Compliance</span></td>
+              <td style="color:#555">Q4 FY26</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">Apr 30, 2026</td>
+              <td style="color:#555">Finance Team</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Payroll Register — Apr 2026</td>
+              <td><span class="chip chip-pay">Payroll</span></td>
+              <td style="color:#555">Apr 2026</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:4px">Excel</span></td>
+              <td style="color:#888">Apr 12, 2026</td>
+              <td style="color:#555">Auto-scheduled</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Department Productivity Dashboard — Q3</td>
+              <td><span class="chip chip-perf">Performance</span></td>
+              <td style="color:#555">Q3 FY26</td>
+              <td><span style="font-size:11px;font-weight:700;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px">PDF</span></td>
+              <td style="color:#888">Jan 31, 2026</td>
+              <td style="color:#555">HR Manager</td>
+              <td><span class="chip chip-ready">Ready</span></td>
+              <td><div class="act-row"><button class="act-btn act-dl">↓</button><button class="act-btn act-view">👁</button><button class="act-btn act-share">↗</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pg-footer">
+          <span>Showing 1–8 of 128 reports</span>
+          <div class="pg-btns">
+            <div class="pgb cur">1</div>
+            <div class="pgb">2</div>
+            <div class="pgb">3</div>
+            <span style="padding:0 4px;line-height:28px">...</span>
+            <div class="pgb">16</div>
+            <div class="pgb" style="width:auto;padding:0 10px">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

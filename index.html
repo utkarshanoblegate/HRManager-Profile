@@ -1,0 +1,247 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.login-wrap{display:flex;min-height:100vh;background:var(--color-background-tertiary)}
+.left-panel{width:420px;flex-shrink:0;background:#0d47a1;display:flex;flex-direction:column;justify-content:space-between;padding:48px 44px;position:relative;overflow:hidden}
+.lp-deco1{position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.05)}
+.lp-deco2{position:absolute;left:-60px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04)}
+.lp-deco3{position:absolute;right:40px;bottom:160px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04)}
+.lp-top{position:relative;z-index:1}
+.lp-logo{display:flex;align-items:center;gap:14px;margin-bottom:56px}
+.lp-logo-icon{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;letter-spacing:-1px}
+.lp-brand{font-size:24px;font-weight:700;color:#fff;line-height:1.1}
+.lp-brand-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px}
+.lp-headline{font-size:30px;font-weight:500;color:#fff;line-height:1.35;margin-bottom:16px}
+.lp-headline span{color:rgba(255,255,255,.5)}
+.lp-desc{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;max-width:300px}
+.lp-features{margin-top:40px;display:flex;flex-direction:column;gap:14px}
+.lp-feat{display:flex;align-items:center;gap:12px}
+.lp-feat-icon{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lp-feat-icon i{font-size:17px;color:rgba(255,255,255,.85)}
+.lp-feat-text{font-size:13px;color:rgba(255,255,255,.75)}
+.lp-feat-text strong{color:#fff;font-weight:500}
+.lp-bottom{position:relative;z-index:1}
+.lp-stats{display:flex;gap:24px}
+.lp-stat-num{font-size:22px;font-weight:700;color:#fff}
+.lp-stat-lbl{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+.lp-divider{width:1px;background:rgba(255,255,255,.15);align-self:stretch}
+.right-panel{flex:1;display:flex;align-items:center;justify-content:center;padding:40px}
+.form-card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:44px 44px 40px;width:100%;max-width:440px}
+.form-title{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.form-sub{font-size:14px;color:var(--color-text-secondary);margin-bottom:32px;line-height:1.5}
+.form-label{display:block;font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:7px}
+.form-group{margin-bottom:20px;position:relative}
+.form-input-wrap{position:relative}
+.form-input-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--color-text-tertiary);pointer-events:none}
+.form-input{width:100%;padding:11px 14px 11px 40px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary);outline:none;transition:border-color .15s,box-shadow .15s}
+.form-input:focus{border-color:#1976d2;box-shadow:0 0 0 3px rgba(25,118,210,.1)}
+.form-input::placeholder{color:var(--color-text-tertiary)}
+.toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;border:none;background:none;color:var(--color-text-tertiary);padding:4px;display:flex;align-items:center;justify-content:center}
+.toggle-pw i{font-size:17px}
+.toggle-pw:hover i{color:var(--color-text-secondary)}
+.form-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.check-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.check-wrap input{width:16px;height:16px;cursor:pointer;accent-color:#1976d2}
+.check-lbl{font-size:13px;color:var(--color-text-secondary)}
+.forgot-link{font-size:13px;color:#1976d2;text-decoration:none;font-weight:500;cursor:pointer}
+.forgot-link:hover{text-decoration:underline}
+.login-btn{width:100%;padding:13px;background:#1565c0;border:none;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;color:#fff;cursor:pointer;transition:background .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px}
+.login-btn:hover{background:#0d47a1}
+.login-btn:active{transform:scale(0.99)}
+.login-btn i{font-size:17px}
+.divider-row{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.divider-line{flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.divider-text{font-size:12px;color:var(--color-text-tertiary)}
+.sso-btn{width:100%;padding:11px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;font-weight:500;color:var(--color-text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .13s;margin-bottom:20px}
+.sso-btn:hover{background:var(--color-background-secondary)}
+.sso-btn i{font-size:18px;color:#1976d2}
+.form-footer{text-align:center;font-size:13px;color:var(--color-text-secondary)}
+.form-footer a{color:#1976d2;text-decoration:none;font-weight:500}
+.form-footer a:hover{text-decoration:underline}
+.role-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.role-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);background:var(--color-background-secondary);transition:all .13s}
+.role-pill.active{background:#e3f2fd;border-color:#1976d2;color:#1565c0}
+.error-msg{font-size:12px;color:var(--color-text-danger);margin-top:6px;display:flex;align-items:center;gap:5px}
+.error-msg i{font-size:14px}
+.input-err{border-color:var(--color-border-danger)!important}
+.input-err:focus{box-shadow:0 0 0 3px rgba(211,47,47,.1)!important}
+.badge-new{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;background:#e3f2fd;color:#1565c0;margin-left:8px;vertical-align:middle}
+.version-tag{font-size:11px;color:rgba(255,255,255,.4);margin-top:24px}
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">PayVidhi HRMS login page</h2>
+
+<div class="login-wrap">
+
+  <!-- Left Branding Panel -->
+  <div class="left-panel">
+    <div class="lp-deco1"></div>
+    <div class="lp-deco2"></div>
+    <div class="lp-deco3"></div>
+
+    <div class="lp-top">
+      <div class="lp-logo">
+        <div class="lp-logo-icon">PV</div>
+        <div>
+          <div class="lp-brand">PayVidhi</div>
+          <div class="lp-brand-sub">Enterprise HRMS &amp; Payroll</div>
+        </div>
+      </div>
+
+      <div class="lp-headline">One platform for <span>your entire</span> workforce</div>
+      <div class="lp-desc">Manage payroll, attendance, leaves, performance and compliance — all in one secure place.</div>
+
+      <div class="lp-features">
+        <div class="lp-feat">
+          <div class="lp-feat-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+          <div class="lp-feat-text"><strong>Employee Management</strong> — profiles, docs &amp; onboarding</div>
+        </div>
+        <div class="lp-feat">
+          <div class="lp-feat-icon"><i class="ti ti-briefcase" aria-hidden="true"></i></div>
+          <div class="lp-feat-text"><strong>Payroll &amp; Compliance</strong> — PF, ESIC, TDS auto-filing</div>
+        </div>
+        <div class="lp-feat">
+          <div class="lp-feat-icon"><i class="ti ti-calendar" aria-hidden="true"></i></div>
+          <div class="lp-feat-text"><strong>Leave &amp; Attendance</strong> — real-time tracking</div>
+        </div>
+        <div class="lp-feat">
+          <div class="lp-feat-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+          <div class="lp-feat-text"><strong>Performance &amp; Reports</strong> — reviews, KPIs, analytics</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-bottom">
+      <div class="lp-stats">
+        <div>
+          <div class="lp-stat-num">14</div>
+          <div class="lp-stat-lbl">Employees</div>
+        </div>
+        <div class="lp-divider"></div>
+        <div>
+          <div class="lp-stat-num">4</div>
+          <div class="lp-stat-lbl">Departments</div>
+        </div>
+        <div class="lp-divider"></div>
+        <div>
+          <div class="lp-stat-num">FY 25–26</div>
+          <div class="lp-stat-lbl">Active cycle</div>
+        </div>
+      </div>
+      <div class="version-tag">PayVidhi v2.4.1 &nbsp;·&nbsp; Secured by 256-bit TLS</div>
+    </div>
+  </div>
+
+  <!-- Right Form Panel -->
+  <div class="right-panel">
+    <div class="form-card">
+
+      <div class="form-title">Welcome back</div>
+      <div class="form-sub">Sign in to your PayVidhi workspace to continue.</div>
+
+     
+
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label" for="email">Work email</label>
+        <div class="form-input-wrap">
+          <i class="ti ti-mail" aria-hidden="true"></i>
+          <input class="form-input" type="email" id="email" placeholder="you@company.com" autocomplete="email" />
+        </div>
+        <div class="error-msg" id="emailErr" style="display:none"><i class="ti ti-alert-circle"></i>Please enter a valid email address</div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="form-input-wrap">
+          <i class="ti ti-lock" aria-hidden="true"></i>
+          <input class="form-input" type="password" id="password" placeholder="Enter your password" autocomplete="current-password" style="padding-right:42px" />
+          <button class="toggle-pw" onclick="togglePw()" type="button" aria-label="Toggle password visibility" id="togglePwBtn">
+            <i class="ti ti-eye" id="pwEyeIcon"></i>
+          </button>
+        </div>
+        <div class="error-msg" id="passErr" style="display:none"><i class="ti ti-alert-circle"></i>Password must be at least 8 characters</div>
+      </div>
+
+      <!-- Remember + Forgot -->
+      <div class="form-row">
+        <label class="check-wrap">
+          <input type="checkbox" id="remember" />
+          <span class="check-lbl">Remember me for 30 days</span>
+        </label>
+        <a class="forgot-link" onclick="sendPrompt('I forgot my PayVidhi password, how do I reset it?')">Forgot password?</a>
+      </div>
+
+      <!-- Login Button -->
+      <a href="payvidhi_dashboard.html" style="text-decoration: none;"><button class="login-btn" onclick="handleLogin()" id="loginBtn">
+        <i class="ti ti-login" aria-hidden="true"></i>
+        Sign in to PayVidhi
+      </button> </a>
+
+      
+
+    </div>
+  </div>
+</div>
+
+<script>
+function selectRole(el, role) {
+  document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function togglePw() {
+  var inp = document.getElementById('password');
+  var icon = document.getElementById('pwEyeIcon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'ti ti-eye-off';
+  } else {
+    inp.type = 'password';
+    icon.className = 'ti ti-eye';
+  }
+}
+
+function handleLogin() {
+  var email = document.getElementById('email').value.trim();
+  var pass = document.getElementById('password').value;
+  var emailErr = document.getElementById('emailErr');
+  var passErr = document.getElementById('passErr');
+  var emailInp = document.getElementById('email');
+  var passInp = document.getElementById('password');
+  var btn = document.getElementById('loginBtn');
+  var valid = true;
+
+  emailInp.classList.remove('input-err');
+  passInp.classList.remove('input-err');
+  emailErr.style.display = 'none';
+  passErr.style.display = 'none';
+
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailOk) {
+    emailInp.classList.add('input-err');
+    emailErr.style.display = 'flex';
+    valid = false;
+  }
+  if (pass.length < 8) {
+    passInp.classList.add('input-err');
+    passErr.style.display = 'flex';
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  btn.innerHTML = '<i class="ti ti-loader-2" aria-hidden="true" style="animation:spin .8s linear infinite"></i> Signing in…';
+  btn.disabled = true;
+
+  setTimeout(function() {
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Signed in — redirecting…';
+    btn.style.background = '#2e7d32';
+  }, 1800);
+}
+
+var style = document.createElement('style');
+style.textContent = '@keyframes spin{to{transform:rotate(360deg)}} .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}';
+document.head.appendChild(style);
+</script>
